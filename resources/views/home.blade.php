@@ -8,8 +8,7 @@
 </head>
 
 <body>
-    <h1>In User</h1>
-    <button><a href="{{route('logout')}}">logout</a></button>
+    <h1>Home Page</h1>
 </body>
 
 </html>

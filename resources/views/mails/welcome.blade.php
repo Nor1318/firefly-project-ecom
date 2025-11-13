@@ -8,8 +8,8 @@
 </head>
 
 <body>
-    <h1>In User</h1>
-    <button><a href="{{route('logout')}}">logout</a></button>
+    <h1>Hello, {{$user->name}}.</h1>
+    <p>Welcome, to Ecommerx</p>
 </body>
 
 </html>
