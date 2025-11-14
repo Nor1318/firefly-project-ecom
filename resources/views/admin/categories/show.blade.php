@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>View Category - Admin Dashboard</title>
     @vite('resources/css/app.css')
 </head>
 
@@ -28,36 +28,40 @@
 
         <main class="flex-auto p-6">
             <div class="flex items-center justify-between mb-6">
-                <h1 class="text-2xl font-semibold">Dashboard</h1>
+                <h1 class="text-2xl font-semibold">View Category</h1>
                 <button class="px-4 py-2 bg-gray-800 text-white rounded">Logout</button>
             </div>
 
             <div class="bg-white rounded-lg shadow">
+                <div class="p-4 border-b flex justify-between m-2">
+                    <h2 class="text-lg font-semibold">Category Details</h2>
+                    <a href="{{route('categories.index')}}" class="px-4 py-2 bg-blue-800 text-white rounded">Back</a>
+                </div>
+
                 <div class="p-6">
-                    <table class="w-full">
-                        <tbody>
-                            <tr class="pb-2">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Users</td>
-                                <td class="py-4 text-right text-2xl font-semibold text-gray-900">1</td>
-                            </tr>
-                            <tr class="pb-2">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Categories</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">45</td>
-                            </tr>
-                            <tr class="pb-2">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Products</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">678</td>
-                            </tr>
-                            <tr class="border-b">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Orders</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">2,891</td>
-                            </tr>
-                            <tr>
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Revenue</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">Rs 125</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="space-y-4">
+                        <div class="border-b pb-4">
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Category ID</label>
+                            <p class="text-sm text-gray-900">101</p>
+                        </div>
+
+                        <div class="border-b pb-4">
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Name</label>
+                            <p class="text-sm text-gray-900">Bobby Dahal</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Slug</label>
+                            <p class="text-sm text-gray-900">Laptop</p>
+                        </div>
+
+
+                    </div>
+
+                    <div class="flex gap-2 mt-6 pt-4 border-t">
+                        <button class="px-4 py-2 bg-yellow-600 text-white rounded"><a href="{{route('categories.edit'),1}}">Edit</a></button>
+                        <button class="px-4 py-2 bg-red-800 text-white rounded">Delete</button>
+                    </div>
                 </div>
             </div>
         </main>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Create Category - Admin Dashboard</title>
     @vite('resources/css/app.css')
 </head>
 
@@ -16,7 +16,7 @@
             <div class="p-4 text-xl font-bold text-center border-b-1">
                 Admin Panel
             </div>
-            <nav class="p-4 space-y-2">
+             <nav class="p-4 space-y-2">
                 <a href="{{route('admin')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Dashboard</a>
                 <a href="{{route('users.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">User</a>
                 <a href="{{route('categories.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Category</a>
@@ -28,36 +28,33 @@
 
         <main class="flex-auto p-6">
             <div class="flex items-center justify-between mb-6">
-                <h1 class="text-2xl font-semibold">Dashboard</h1>
+                <h1 class="text-2xl font-semibold">Edit Category</h1>
                 <button class="px-4 py-2 bg-gray-800 text-white rounded">Logout</button>
             </div>
 
             <div class="bg-white rounded-lg shadow">
+                <div class="p-4 border-b flex justify-between m-2">
+                    <h2 class="text-lg font-semibold">Edit Category</h2>
+                    <a href="{{route('categories.index')}}" class="px-4 py-2 bg-blue-800 text-white rounded">Back</a>
+                </div>
+
                 <div class="p-6">
-                    <table class="w-full">
-                        <tbody>
-                            <tr class="pb-2">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Users</td>
-                                <td class="py-4 text-right text-2xl font-semibold text-gray-900">1</td>
-                            </tr>
-                            <tr class="pb-2">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Categories</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">45</td>
-                            </tr>
-                            <tr class="pb-2">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Products</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">678</td>
-                            </tr>
-                            <tr class="border-b">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Orders</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">2,891</td>
-                            </tr>
-                            <tr>
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Revenue</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">Rs 125</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <form action="" method="POST" class="space-y-4">
+
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Name</label>
+                            <input type="text" name="name" class="w-full px-4 py-2 border border-gray-300 rounded" placeholder="Enter category name">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Slug</label>
+                            <input type="text" name="slug" class="w-full px-4 py-2 border border-gray-300 rounded" placeholder="Enter category slug">
+                        </div>
+
+                        <div class="flex gap-2 pt-4 ">
+                            <button type="submit" class="px-4 py-2 bg-yellow-800 text-white rounded">Edit Category</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </main>

@@ -15,11 +15,20 @@ class Product extends Model
         'image',
         'price',
         'quantity',
-        'description'
+        'description',
+        'category_id'
     ];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+    public function cartItems()
+    {
+        $this->hasMany(CartItem::class);
+    }
+    public function orderItems()
+    {
+        $this->hasMany(OrderItem::class);
     }
 }

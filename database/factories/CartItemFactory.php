@@ -22,8 +22,6 @@ class CartItemFactory extends Factory
             'cart_id' => Cart::factory(),
             'product_id' => Product::factory(),
             'quantity' => fake()->numberBetween(1, 1000),
-
-
         ];
     }
 }

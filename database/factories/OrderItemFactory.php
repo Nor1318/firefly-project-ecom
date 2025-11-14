@@ -23,7 +23,6 @@ class OrderItemFactory extends Factory
             'product_id' => Product::factory(),
             'amount_per_item' => fake()->numberBetween(1, 100000),
             'quantity' => fake()->numberBetween(1, 1000),
-
         ];
     }
 }

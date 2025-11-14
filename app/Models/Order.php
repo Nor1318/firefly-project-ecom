@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
      protected $fillable = [
-          'status'
+          'user_id',
+          'status',
+          'address_id'
      ];
      use HasFactory;
      public function user()
@@ -18,5 +20,13 @@ class Order extends Model
      public function address()
      {
           return $this->belongsTo(Address::class);
+     }
+     public function orderItems()
+     {
+          return $this->hasMany(OrderItem::class);
+     }
+     public function payment()
+     {
+          return $this->hasOne(Payment::class);
      }
 }

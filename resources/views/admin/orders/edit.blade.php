@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Create User</title>
     @vite('resources/css/app.css')
 </head>
 
@@ -28,36 +28,45 @@
 
         <main class="flex-auto p-6">
             <div class="flex items-center justify-between mb-6">
-                <h1 class="text-2xl font-semibold">Dashboard</h1>
+                <h1 class="text-2xl font-semibold">Orders</h1>
                 <button class="px-4 py-2 bg-gray-800 text-white rounded">Logout</button>
             </div>
 
             <div class="bg-white rounded-lg shadow">
+                <div class="p-4 border-b flex justify-between m-2">
+                    <h2 class="text-lg font-semibold">Edit Order</h2>
+                    <button class="px-4 py-2 bg-blue-800 text-white rounded"><a href="{{route('orders.index')}}">Back</a></button>
+                </div>
+
                 <div class="p-6">
-                    <table class="w-full">
-                        <tbody>
-                            <tr class="pb-2">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Users</td>
-                                <td class="py-4 text-right text-2xl font-semibold text-gray-900">1</td>
-                            </tr>
-                            <tr class="pb-2">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Categories</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">45</td>
-                            </tr>
-                            <tr class="pb-2">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Products</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">678</td>
-                            </tr>
-                            <tr class="border-b">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Orders</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">2,891</td>
-                            </tr>
-                            <tr>
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Revenue</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">Rs 125</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <form action="" method="POST" class="space-y-4">
+                        @csrf
+
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">User ID</label>
+                            <input type="text" name="user_id" class="w-full px-4 py-2 border border-gray-300 rounded " placeholder="Enter User ID">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Address ID</label>
+                            <input type="text" name="address_id" class="w-full px-4 py-2 border border-gray-300 rounded " placeholder="Enter Address ID">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Status</label>
+                            <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded ">
+                                <option value="">Select Status</option>
+                                <option value="first">first</option>
+                                <option value="second">second</option>
+                            </select>
+                        </div>
+
+
+                        <div class="flex gap-2 pt-4 ">
+                            <button type="submit" class="px-4 py-2 bg-yellow-800 text-white rounded">Edit Order</button>
+
+                        </div>
+                    </form>
                 </div>
             </div>
         </main>

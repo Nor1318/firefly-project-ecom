@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('image')->nullable();
-            $table->integer('price');
-            $table->integer('quantity');
-            $table->text('description');
+            $table->unsignedInteger('price')->default(0);
+            $table->unsignedInteger('quantity')->default(0);
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

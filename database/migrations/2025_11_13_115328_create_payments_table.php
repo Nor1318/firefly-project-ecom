@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
-            $table->string('payment_method')->default('esewa');
-            $table->string('transaction_code')->unique()->nullable();
-            $table->string('status')->default('unpaid');
+            $table->enum('payment_method', ['esewa', 'khalti', 'Cash'])->default('cash');
+            $table->string('transaction_code')->nullable();
+            $table->enum('status', ['unpaid', 'pending', 'paid', 'failed'])->default('unpaid');
             $table->timestamps();
         });
     }
