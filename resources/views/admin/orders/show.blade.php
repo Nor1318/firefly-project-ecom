@@ -71,16 +71,19 @@
                 </div>
             </div>
 
+
+
             <div class="bg-white rounded-lg shadow">
                 <div class="p-4 border-b flex justify-between m-2">
-                    <h2 class="text-lg font-semibold">Order Item List</h2>
-                    <button class="px-4 py-2 bg-blue-800 text-white rounded"><a href="{{route('users.create')}}">Add Order Item</a></button>
+                    <h2 class="text-lg font-semibold">Order Items List</h2>
+                    <button class="px-4 py-2 bg-blue-800 text-white rounded"><a href="{{route('order_items.create',1)}}">Add Order Item</a></button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order ID</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product ID</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount Per Item</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
@@ -90,13 +93,14 @@
                         <tbody class="bg-white">
                             <tr>
                                 <td class="px-6 py-4 text-sm text-gray-900">1</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">13</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">100</td>
-                                <td class="px-6 py-4 text-sm text-gray-900 ">100</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">101</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">25</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">$50.00</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">2</td>
 
                                 <td class="px-6 py-4 text-sm">
-                                    <button class="px-2 py-1 border bg-green-800 border-green-700 text-white rounded-3xl"><a href="{{route('orders.show',1)}}">View</a></button>
-                                    <button class="px-2 py-1 border bg-yellow-800 border-yellow-700 text-white rounded-3xl"><a href="{{route('orders.edit',1)}}">Edit</a></button>
+                                    <button class="px-2 py-1 border bg-green-800 border-green-700 text-white rounded-3xl"><a href="{{route('order_items.show',['order' =>1 ,'order_item'=> 1])}}">View</a></button>
+                                    <button class="px-2 py-1 border bg-yellow-800 border-yellow-700 text-white rounded-3xl"><a href="{{route('order_items.edit',['order' =>1 ,'order_item'=> 1])}}">Edit</a></button>
                                     <button class="px-2 py-1 border bg-red-800 border-red-700 text-white rounded-3xl">Delete</button>
                                 </td>
                             </tr>

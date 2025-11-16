@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AddressController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\OrderItemController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\AdminController;
@@ -16,6 +17,15 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/cart', function () {
+    return view('cart');
+});
+Route::get('/payment', function () {
+    return view('payment');
+});
+Route::get('/products', function () {
+    return view('products');
+});
 Route::get('/register', RegisterController::class)->name('register.show');
 Route::post('/register', [RegisterController::class, 'register'])->name('register');
 Route::get('/login', LoginController::class)->name('login.show');
@@ -30,6 +40,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('/admin/orders', OrderController::class);
     Route::resource('/admin/payments', PaymentController::class);
     Route::resource('/admin/users/{user}/addresses', AddressController::class);
+    Route::resource('/admin/orders/{order}/order_items', OrderItemController::class);
 });
 Route::get('/users', function () {
     return view('users.dashboard');
