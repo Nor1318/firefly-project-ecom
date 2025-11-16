@@ -17,25 +17,25 @@
         <div class="space-y-4">
             <div class="pb-4">
                 <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Category ID</label>
-                <p class="text-sm text-gray-900">101</p>
+                <p class="text-sm text-gray-900">{{$category->id}}</p>
             </div>
 
             <div class="pb-4">
                 <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Name</label>
-                <p class="text-sm text-gray-900">Bobby Dahal</p>
+                <p class="text-sm text-gray-900">{{$category->name}}</p>
             </div>
 
             <div>
                 <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Slug</label>
-                <p class="text-sm text-gray-900">Laptop</p>
+                <p class="text-sm text-gray-900">{{$category->slug}}</p>
             </div>
 
 
         </div>
 
         <div class="flex gap-2 mt-6 pt-4 ">
-            <button class="px-4 py-2 bg-yellow-600 text-white rounded"><a href="{{route('categories.edit',1)}}">Edit</a></button>
-            <button class="px-4 py-2 bg-red-800 text-white rounded">Delete</button>
+            <button class="px-4 py-2 bg-yellow-600 text-white rounded"><a href="{{route('categories.edit',$category->id)}}">Edit</a></button>
+
         </div>
     </div>
 </div>

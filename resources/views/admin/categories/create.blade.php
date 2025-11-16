@@ -14,16 +14,22 @@
     </div>
 
     <div class="p-6">
-        <form action="" method="POST" class="space-y-4">
-
+        <form action="{{route('categories.store')}}" method="post" class="space-y-4">
+            @csrf
             <div>
                 <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Name</label>
                 <input type="text" name="name" class="w-full px-4 py-2 border border-gray-300 rounded " placeholder="Enter category name">
+                @error('name')
+                <div class="text-red-500">{{$message}}</div>
+                @enderror
             </div>
 
             <div>
                 <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Slug</label>
                 <input type="text" name="slug" class="w-full px-4 py-2 border border-gray-300 rounded " placeholder="Enter category slug">
+                @error('slug')
+                <div class="text-red-500">{{$message}}</div>
+                @enderror
             </div>
 
             <div class="flex gap-2 pt-4 ">

@@ -28,40 +28,61 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Category $categories)
     {
-        //
+        $request->validate(
+            [
+                'name' => 'required|string|min:2|max:50|unique:categories',
+                'slug' => 'required|min:2|max:255|unique:categories',
+            ]
+        );
+        $categories->name = $request->name;
+        $categories->slug = $request->slug;
+        $categories->save();
+        return redirect()->route('categories.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Category $category)
     {
-        return view('admin.categories.show');
+        return view('admin.categories.show', compact('category'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Category $category)
     {
-        return view('admin.categories.edit');
+        return view('admin.categories.edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Category $category)
     {
-        //
+        $request->validate(
+            [
+                'name' => 'required|string|min:2|max:50|unique:categories',
+                'slug' => 'required|min:2|max:255|unique:categories',
+            ]
+
+
+        );
+        $category->name = $request->name;
+        $category->slug = $request->slug;
+        $category->update();
+        return redirect()->route('categories.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return redirect()->route('categories.index');
     }
 }

@@ -23,16 +23,21 @@
                 </tr>
             </thead>
             <tbody class="bg-white ">
+                @foreach($categories as $category)
                 <tr>
-                    <td class="px-6 py-4 text-sm text-gray-900">101</td>
-                    <td class="px-6 py-4  text-sm text-gray-900">Bobby Dahal</td>
-                    <td class="px-6 py-4 text-sm text-gray-900">Laptop</td>
-                    <td class="px-6 py-4 text-sm">
-                        <button class="px-2 py-1 border bg-green-800 border-green-700 text-white rounded-3xl"><a href="{{route('categories.show',1)}}">View</a></button>
-                        <button class="px-2 py-1 border bg-yellow-800 border-yellow-700 text-white rounded-3xl"><a href="{{route('categories.edit',1)}}">Edit</a></button>
-                        <button class="px-2 py-1 border bg-red-800 border-red-700 text-white rounded-3xl">Delete</button>
-                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-900">{{$category->id}}</td>
+                    <td class="px-6 py-4  text-sm text-gray-900">{{$category->name}}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900">{{$category->slug}}</td>
+                    <td class="px-6 py-4 text-sm flex gap-2">
+                        <a href="{{route('categories.show',$category->id)}}" class="px-2 py-1 border bg-green-800 border-green-700 text-white rounded-3xl">View</a>
+                        <a href="{{route('categories.edit',$category->id)}}" class="px-2 py-1 border bg-yellow-800 border-yellow-700 text-white rounded-3xl">Edit</a>
+                        <form action="{{route('categories.destroy',$category->id)}}" method="post" class="inline">
+                            @csrf
+                            @method('DELETE')
+                            <button class="px-2 py-1 border bg-red-800 border-red-700 text-white rounded-3xl">Delete</button>
+                        </form>
                 </tr>
+                @endforeach
 
 
             </tbody>
