@@ -43,33 +43,38 @@
 
 
                         <div class=" pb-4">
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">ID</label>
+                            <p class="text-sm text-gray-900">{{$user->id}}</p>
+                        </div>
+
+                        <div class=" pb-4">
                             <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Name</label>
-                            <p class="text-sm text-gray-900">Bobby</p>
+                            <p class="text-sm text-gray-900">{{$user->name}}</p>
                         </div>
 
                         <div class=" pb-4">
                             <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Email</label>
-                            <p class="text-sm text-gray-900">bobby@gmail.com</p>
+                            <p class="text-sm text-gray-900">{{$user->email}}</p>
                         </div>
 
                         <div class="">
                             <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Role</label>
-                            <p class="text-sm text-gray-900">Admin</p>
+                            <p class="text-sm text-gray-900">{{$user->role}}</p>
                         </div>
 
 
                     </div>
 
                     <div class="flex gap-2 mt-6 pt-4">
-                        <button class="px-4 py-2 bg-yellow-700 text-white rounded"><a href="{{route('addresses.edit', ['user' => 1, 'address' => 2])}}">Edit</a></button>
-                        <button class="px-4 py-2 bg-red-800 text-white rounded">Delete</button>
+                        <button class="px-4 py-2 bg-yellow-700 text-white rounded"><a href="{{route('users.edit', $user->id)}}">Edit</a></button>
+
                     </div>
                 </div>
             </div>
             <div class="bg-white rounded-lg shadow">
                 <div class="p-4 border-b flex justify-between m-2">
                     <h2 class="text-lg font-semibold">Address List</h2>
-                    <button class="px-4 py-2 bg-blue-800 text-white rounded"><a href="{{route('addresses.create',1)}}">Add Address</a></button>
+
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full">
@@ -85,20 +90,22 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white">
+                            @foreach($addresses as $address)
                             <tr>
-                                <td class="px-6 py-4 text-sm text-gray-900">1</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">13</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">Kp marga</td>
-                                <td class="px-6 py-4 text-sm text-gray-900 ">Pokhara</td>
-                                <td class="px-6 py-4 text-sm text-gray-900 ">P-4</td>
-                                <td class="px-6 py-4 text-sm text-gray-900 ">Nepal</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{$address->id}}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{$address->street_address_1}}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{$address->street_address_2}}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900 ">{{$address->city}}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900 ">{{$address->state}}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900 ">{{$address->country}}</td>
 
                                 <td class="px-6 py-4 text-sm">
-                                    <button class="px-2 py-1 border bg-green-800 border-green-700 text-white rounded-3xl"><a href="{{route('addresses.show',['user' => 1, 'address' => 2])}}">View</a></button>
-                                    <button class="px-2 py-1 border bg-yellow-800 border-yellow-700 text-white rounded-3xl"><a href="{{route('addresses.edit', ['user' => 1, 'address' => 2])}}">Edit</a></button>
-                                    <button class="px-2 py-1 border bg-red-800 border-red-700 text-white rounded-3xl">Delete</button>
+                                    <button class="px-2 py-1 border bg-green-800 border-green-700 text-white rounded-3xl"><a href="{{route('addresses.show',  [$user->id, $address->id])}}">View</a></button>
+
+
                                 </td>
                             </tr>
+                            @endforeach
 
                         </tbody>
                     </table>

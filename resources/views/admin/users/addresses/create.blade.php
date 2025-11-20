@@ -41,7 +41,7 @@
                     </a>
                 </div>
                 <div class="p-6">
-                    <form action="" method="POST">
+                    <form action="{{route('addresses.show', $address->id)}}" method="POST">
                         @csrf
 
                         <div class="mb-4">

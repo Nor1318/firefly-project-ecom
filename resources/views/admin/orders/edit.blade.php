@@ -39,25 +39,20 @@
                 </div>
 
                 <div class="p-6">
-                    <form action="" method="POST" class="space-y-4">
+                    <form action="{{route('orders.update',$order->id)}}" method="POST" class="space-y-4">
                         @csrf
+                        @method('PUT')
 
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">User ID</label>
-                            <input type="text" name="user_id" class="w-full px-4 py-2 border border-gray-300 rounded " placeholder="Enter User ID">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Address ID</label>
-                            <input type="text" name="address_id" class="w-full px-4 py-2 border border-gray-300 rounded " placeholder="Enter Address ID">
-                        </div>
 
                         <div>
                             <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Status</label>
                             <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded ">
+
                                 <option value="">Select Status</option>
-                                <option value="first">first</option>
-                                <option value="second">second</option>
+                                <option value="pending">Pending</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="delivered">Delivered</option>
                             </select>
                         </div>
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -37,7 +38,7 @@ class CategoryController extends Controller
             ]
         );
         $categories->name = $request->name;
-        $categories->slug = $request->slug;
+        $categories->slug = str::slug($request->slug);
         $categories->save();
         return redirect()->route('categories.index');
     }
@@ -65,14 +66,14 @@ class CategoryController extends Controller
     {
         $request->validate(
             [
-                'name' => 'required|string|min:2|max:50|unique:categories',
-                'slug' => 'required|min:2|max:255|unique:categories',
+                'name' => 'required|string|min:2|max:50|unique:categories,name,' . $category->id,
+                'slug' => 'required|min:2|max:255|unique:categories,slug,' . $category->id,
             ]
 
 
         );
         $category->name = $request->name;
-        $category->slug = $request->slug;
+        $category->slug = Str::slug($request->slug);
         $category->update();
         return redirect()->route('categories.index');
     }

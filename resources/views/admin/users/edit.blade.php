@@ -1,87 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('../../components/layouts.admin.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create User</title>
-    @vite('resources/css/app.css')
-</head>
+@section('title', 'Edit User - Admin Dashboard')
 
-<body class="bg-gray-100">
+@section('heading','Users')
 
-    <div class="min-h-screen flex">
-
-        <aside class="w-64 bg-white">
-            <div class="p-4 text-xl font-bold text-center border-b-1">
-                Admin Panel
-            </div>
-            <nav class="p-4 space-y-2">
-                <a href="{{route('admin')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Dashboard</a>
-                <a href="{{route('users.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">User</a>
-                <a href="{{route('categories.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Category</a>
-                <a href="{{route('products.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Product</a>
-                <a href="{{route('orders.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Order</a>
-                <a href="{{route('payments.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Payment</a>
-            </nav>
-        </aside>
-
-        <main class="flex-auto p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h1 class="text-2xl font-semibold">Users</h1>
-                <button class="px-4 py-2 bg-gray-800 text-white rounded">Logout</button>
-            </div>
-
-            <div class="bg-white rounded-lg shadow">
-                <div class="p-4 border-b flex justify-between m-2">
-                    <h2 class="text-lg font-semibold">Edit User</h2>
-                    <button class="px-4 py-2 bg-blue-800 text-white rounded"><a href="{{route('users.index')}}">Back</a></button>
-                </div>
-
-                <div class="p-6">
-                    <form action="" method="POST" enctype="multipart/form-data" class="space-y-4">
-                        @csrf
-
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Name</label>
-                            <input type="text" name="name" class="w-full px-4 py-2 border border-gray-300 rounded " placeholder="Enter user name">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Email</label>
-                            <input type="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded " placeholder="Enter user email">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Password</label>
-                            <input type="password" name="password" class="w-full px-4 py-2 border border-gray-300 rounded " placeholder="Enter Password">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Confirm Password</label>
-                            <input type="password" name="password_confirmation" class="w-full px-4 py-2 border border-gray-300 rounded " placeholder="Re-enter Password">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Role</label>
-                            <select name="role" class="w-full px-4 py-2 border border-gray-300 rounded ">
-                                <option value="">Select Role</option>
-                                <option value="admin">Admin</option>
-                                <option value="user">User</option>
-                            </select>
-                        </div>
+@section('content')
 
 
 
-                        <div class="flex gap-2 pt-4 ">
-                            <button type="submit" class="px-4 py-2 bg-yellow-800 text-white rounded">Edit User</button>
-
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </main>
-
+<div class="bg-white rounded-lg shadow">
+    <div class="p-4 border-b flex justify-between m-2">
+        <h2 class="text-lg font-semibold">Edit User</h2>
+        <button class="px-4 py-2 bg-blue-800 text-white rounded"><a href="{{route('users.index')}}">Back</a></button>
     </div>
 
-</body>
+    <div class="p-6">
+        <form action="{{route('users.update',$user->id)}}" method="POST" class="space-y-4">
+            @csrf
+            @method('PUT')
+            <div>
+                <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Name</label>
+                <input type="text" name="name" class="w-full px-4 py-2 border border-gray-300 rounded " value="{{$user->name}}">
+                @error('name')
+                <div class="text-red-500">{{$message}}</div>
+                @enderror
+            </div>
 
-</html>
+            <div>
+                <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Email</label>
+                <input type="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded " placeholder="Enter user email" value="{{$user->email}}">
+                @error('email')
+                <div class="text-red-500">{{$message}}</div>
+                @enderror
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Password</label>
+                <input type="password" name="password" class="w-full px-4 py-2 border border-gray-300 rounded " placeholder="Enter Password">
+                @error('password')
+                <div class="text-red-500">{{$message}}</div>
+                @enderror
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Confirm Password</label>
+                <input type="password" name="password_confirmation" class="w-full px-4 py-2 border border-gray-300 rounded " placeholder="Re-enter Password">
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Role</label>
+                <select name="role" class="w-full px-4 py-2 border border-gray-300 rounded ">
+                    <option value="">Select Role</option>
+                    <option {{ $user->role == 'admin' ? "selected" : "" }} value="admin">Admin</option>
+                    <option {{ $user->role == 'user' ? "selected" : "" }} value="user">User</option>
+                </select>
+
+                @error('role')
+                <div class="text-red-500">{{$message}}</div>
+                @enderror
+            </div>
+
+
+
+            <div class="flex gap-2 pt-4 ">
+                <button type="submit" class="px-4 py-2 bg-yellow-800 text-white rounded">Edit User</button>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+@endsection

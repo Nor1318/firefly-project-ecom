@@ -25,10 +25,10 @@ class Product extends Model
     }
     public function cartItems()
     {
-        $this->hasMany(CartItem::class);
+        return $this->hasMany(CartItem::class);
     }
     public function orderItems()
     {
-        $this->hasMany(OrderItem::class);
+        return $this->hasMany(OrderItem::class);
     }
 }

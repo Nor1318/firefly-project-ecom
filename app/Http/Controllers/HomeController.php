@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function __invoke()
     {
-        return view('home');
+        $products = Product::query()->latest()->take(4)->get();
+        return view('home', compact('products'));
     }
 }

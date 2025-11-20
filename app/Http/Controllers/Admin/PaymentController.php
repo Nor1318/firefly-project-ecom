@@ -14,7 +14,7 @@ class PaymentController extends Controller
     public function index()
     {
         $payments = Payment::query()->get();
-        return view('admin.payments.index');
+        return view('admin.payments.index', compact('payments'));
     }
 
     /**
@@ -22,7 +22,7 @@ class PaymentController extends Controller
      */
     public function create()
     {
-        return view('admin.payments.create');
+        // return view('admin.payments.create');
     }
 
     /**
@@ -36,9 +36,9 @@ class PaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Payment $payment)
     {
-        return view('admin.payments.show');
+        return view('admin.payments.show', compact('payment'));
     }
 
     /**

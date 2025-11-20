@@ -48,14 +48,14 @@ class User extends Authenticatable
     }
     public function addresses()
     {
-        $this->hasMany(Address::class);
+        return $this->hasMany(Address::class);
     }
     public function cart()
     {
-        $this->hasOne(Cart::class);
+        return $this->hasOne(Cart::class);
     }
     public function orders()
     {
-        $this->hasMany(Order::class);
+        return $this->hasMany(Order::class);
     }
 }

@@ -31,7 +31,7 @@
                     <td class="px-6 py-4 text-sm flex gap-2">
                         <a href="{{route('categories.show',$category->id)}}" class="px-2 py-1 border bg-green-800 border-green-700 text-white rounded-3xl">View</a>
                         <a href="{{route('categories.edit',$category->id)}}" class="px-2 py-1 border bg-yellow-800 border-yellow-700 text-white rounded-3xl">Edit</a>
-                        <form action="{{route('categories.destroy',$category->id)}}" method="post" class="inline">
+                        <form action="{{route('categories.destroy',$category->id)}}" method="post" onsubmit="return confirm('Are you sure you want to delete this user?');" class="inline">
                             @csrf
                             @method('DELETE')
                             <button class="px-2 py-1 border bg-red-800 border-red-700 text-white rounded-3xl">Delete</button>

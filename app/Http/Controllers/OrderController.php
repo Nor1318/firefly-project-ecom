@@ -1,20 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Address;
-use App\Models\User;
+use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class AddressController extends Controller
+class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('admin.users.show');
+        $orders = Order::with('orderItems.product')
+            ->where('user_id', Auth::id())
+            ->latest()
+            ->get();
+
+        return view('order', compact('orders'));
     }
 
     /**
@@ -22,7 +27,7 @@ class AddressController extends Controller
      */
     public function create()
     {
-        // return view('admin.users.addresses.create');
+        //
     }
 
     /**
@@ -36,9 +41,9 @@ class AddressController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user, Address $address)
+    public function show(string $id)
     {
-        return view('admin.users.addresses.show', compact('address'));
+        //
     }
 
     /**
@@ -46,7 +51,7 @@ class AddressController extends Controller
      */
     public function edit(string $id)
     {
-        // return view('admin.users.addresses.edit');
+        //
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -36,25 +37,28 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Order $order)
     {
-        return view('admin.orders.show');
+        $orderItems = OrderItem::query()->where('order_id', $order->id)->get();
+        return view('admin.orders.show', compact('order', 'orderItems'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Order $order)
     {
-        return view('admin.orders.edit');
+        return view('admin.orders.edit', compact('order'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Order $order)
     {
-        //
+        $order->status = $request->status;
+        $order->update();
+        return redirect()->route('orders.index');
     }
 
     /**

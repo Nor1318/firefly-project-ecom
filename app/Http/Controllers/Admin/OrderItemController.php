@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 
 class OrderItemController extends Controller
@@ -34,9 +35,9 @@ class OrderItemController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(OrderItem $orderItem)
     {
-        return view('admin.orders.order_items.show');
+        return view('admin.orders.order_items.show', compact($orderItem));
     }
 
     /**

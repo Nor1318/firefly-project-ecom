@@ -1,69 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('../components/layouts.admin.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    @vite('resources/css/app.css')
-</head>
+@section('title', 'Admin Dashboard')
 
-<body class="bg-gray-100">
+@section('heading','Dashboard')
 
-    <div class="min-h-screen flex">
+@section('content')
 
-        <aside class="w-64 bg-white">
-            <div class="p-4 text-xl font-bold text-center border-b-1">
-                Admin Panel
-            </div>
-            <nav class="p-4 space-y-2">
-                <a href="{{route('admin')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Dashboard</a>
-                <a href="{{route('users.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">User</a>
-                <a href="{{route('categories.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Category</a>
-                <a href="{{route('products.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Product</a>
-                <a href="{{route('orders.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Order</a>
-                <a href="{{route('payments.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Payment</a>
-            </nav>
-        </aside>
 
-        <main class="flex-auto p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h1 class="text-2xl font-semibold">Dashboard</h1>
-                <button class="px-4 py-2 bg-gray-800 text-white rounded">Logout</button>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Total Users</p>
+                <p class="text-3xl font-bold text-gray-900">{{$users}}</p>
             </div>
 
-            <div class="bg-white rounded-lg shadow">
-                <div class="p-6">
-                    <table class="w-full">
-                        <tbody>
-                            <tr class="pb-2">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Users</td>
-                                <td class="py-4 text-right text-2xl font-semibold text-gray-900">1</td>
-                            </tr>
-                            <tr class="pb-2">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Categories</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">45</td>
-                            </tr>
-                            <tr class="pb-2">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Products</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">678</td>
-                            </tr>
-                            <tr class="border-b">
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Orders</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">2,891</td>
-                            </tr>
-                            <tr>
-                                <td class="py-4 text-lg font-medium text-gray-500">Total Revenue</td>
-                                <td class="py-4 text-right text-xl font-semibold text-gray-900">Rs 125</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
-
+        </div>
     </div>
 
-</body>
 
-</html>
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Total Categories</p>
+                <p class="text-3xl font-bold text-gray-900">{{$categories}}</p>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Total Products</p>
+                <p class="text-3xl font-bold text-gray-900">{{$products}}</p>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Total Orders</p>
+                <p class="text-3xl font-bold text-gray-900">{{$orders}}</p>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow lg:col-span-2">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Total Revenue</p>
+                <p class="text-3xl font-bold text-gray-900">Rs {{$totalRevenue}}</p>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+@endsection
