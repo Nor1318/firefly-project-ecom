@@ -1,92 +1,136 @@
-@extends('../components/layouts.app')
+@extends('components/layouts.app')
 
 @section('content')
 
-<main class="max-w-7xl mx-auto px-6 py-12">
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
+<main class="py-12 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2 space-y-4">
-            @php
-            $total = 0;
-            $shipping = 100;
-            @endphp
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Your Shopping Cart</h1>
+            <p class="text-gray-500 mt-2">Manage your items and proceed to checkout</p>
+        </div>
 
-            @foreach(Auth::user()->cart->cartItems as $cartItem)
-            @php
-            $total += $cartItem->product->price * $cartItem->quantity
-            @endphp
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center gap-6">
-                    <div class="w-24 h-24 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
-                        <img src="/storage/{{$cartItem->product->image}}" alt="">
+        @php
+        $total = 0;
+        $shipping = 100;
+        @endphp
+
+        @if(Auth::user()->cart && Auth::user()->cart->cartItems->count() > 0)
+
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <!-- Cart Header (Hidden on mobile) -->
+            <div class="hidden md:grid grid-cols-12 gap-4 p-6 bg-gray-50 border-b border-gray-200 text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                <div class="col-span-6">Product</div>
+                <div class="col-span-3 text-center">Quantity</div>
+                <div class="col-span-2 text-right">Total</div>
+                <div class="col-span-1 text-center">Actions</div>
+            </div>
+
+            <div class="divide-y divide-gray-100">
+                @foreach(Auth::user()->cart->cartItems as $cartItem)
+                @php
+                $lineTotal = $cartItem->product->price * $cartItem->quantity;
+                $total += $lineTotal;
+                @endphp
+
+                <!-- Cart Item Row -->
+                <div class="p-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-center group hover:bg-gray-50/50 transition-colors">
+
+                    <!-- Product Info -->
+                    <div class="col-span-1 md:col-span-6 flex items-center gap-6">
+                        <div class="w-20 h-20 md:w-24 md:h-24 bg-gray-100 rounded-xl flex-shrink-0 overflow-hidden border border-gray-200">
+                            <img src="/storage/{{$cartItem->product->image}}" alt="{{$cartItem->product->name}}" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">{{$cartItem->product->name}}</h3>
+                            <p class="text-gray-500 text-sm mb-1 line-clamp-1">{{$cartItem->product->description}}</p>
+                            <p class="text-sm font-medium text-gray-500">Unit Price: Rs {{$cartItem->product->price}}</p>
+                        </div>
                     </div>
-                    <div class="flex-grow">
-                        <h3 class="font-semibold text-gray-900">{{$cartItem->product->name}}</h3>
-                        <p class="text-gray-600 text-sm">{{$cartItem->product->description}}</p>
-                        <p class="text-lg font-bold text-gray-900 mt-2">Rs {{$cartItem->product->price}}</p>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <form action="{{ route('cart.update', $cartItem->product->id) }}" method="POST" class="inline">
+
+                    <div class="col-span-1 md:col-span-3 flex flex-col items-center justify-center">
+                        <form action="{{ route('cart.update', $cartItem->product->id) }}" method="POST" class="flex flex-col items-center gap-2">
                             @csrf
                             @method('PUT')
-                            <div class="flex items-center border border-gray-300 rounded">
-                                <button type="submit" name="quantity" value="{{$cartItem->quantity - 1}}" class="px-3 py-1 text-gray-600 hover:bg-gray-100">-</button>
-                                <span class="px-4 py-1 border-x border-gray-300">{{$cartItem->quantity}}</span>
-                                <button type="submit" name="quantity" value="{{$cartItem->quantity + 1}}" class="px-3 py-1 text-gray-600 hover:bg-gray-100">+</button>
+
+                            <div class="flex items-center border border-gray-300 rounded-lg bg-white overflow-hidden">
+                                <button type="button" onclick="this.nextElementSibling.stepDown()" class="px-3 py-2 text-gray-600 hover:bg-gray-100">
+                                    <i class="ph-bold ph-minus"></i>
+                                </button>
+
+                                <!-- Input -->
+                                <input
+                                    type="number"
+                                    name="quantity_{{$cartItem->product->id}}"
+                                    value="{{ $cartItem->quantity }}"
+                                    min="1"
+
+                                    class="w-12 text-center border-x border-gray-300 py-2 text-gray-900 font-semibold focus:outline-none appearance-none">
+                                <button type="button" onclick="this.previousElementSibling.stepUp()" class="px-3 py-2 text-gray-600 hover:bg-gray-100">
+                                    <i class="ph-bold ph-plus"></i>
+                                </button>
                             </div>
-                            @error('quantity')
-                            <div class="text-red-500">{{$message}}</div>
+
+                            <!-- Update Button -->
+                            <button type="submit" class="text-xs font-semibold text-primary hover:text-green-800 underline decoration-transparent hover:decoration-primary transition-all">
+                                Update
+                            </button>
+
+                            @error('quantity_'.$cartItem->product->id)
+                            <div class="text-red-500 text-xs">{{$message}}</div>
                             @enderror
                         </form>
+
+                    </div>
+                    <!-- Price Calculation -->
+                    <div class="col-span-1 md:col-span-2 flex items-center justify-between md:justify-end">
+                        <span class="md:hidden text-gray-500 font-medium">Total:</span>
+                        <p class="text-lg font-bold text-gray-900">Rs {{$lineTotal}}</p>
+                    </div>
+
+                    <!-- Remove Button -->
+                    <div class="col-span-1 md:col-span-1 flex justify-end md:justify-center">
                         <form method="post" action="{{route('cart.destroy', $cartItem->product->id)}}">
                             @csrf
                             @method('DELETE')
-                            <button class="text-red-600 hover:text-red-800">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                </svg>
+                            <button class="text-gray-400 hover:text-red-600 p-2 rounded-full hover:bg-red-50 transition-all" title="Remove Item">
+                                <i class="ph-duotone ph-trash text-2xl"></i>
                             </button>
                         </form>
                     </div>
                 </div>
+                @endforeach
             </div>
-            @endforeach
-        </div>
 
-        <div class="lg:col-span-1">
-            <div class="bg-white rounded-lg shadow p-6 sticky top-6">
-                <h2 class="text-xl font-semibold text-gray-900 mb-4">Order Summary</h2>
-
-                <div class="space-y-3 mb-4">
-                    <div class="flex justify-between text-gray-600">
-                        <span>Subtotal</span>
-                        <span>Rs {{$total}}</span>
-                    </div>
-                    <div class="flex justify-between text-gray-600">
-                        <span>Shipping</span>
-                        <span>Rs {{$shipping}}</span>
-                    </div>
-
-                    <div class="border-t pt-3 flex justify-between text-lg font-bold text-gray-900">
-                        <span>Total</span>
-                        <span>Rs {{$total + $shipping}}</span>
+            <!-- Bottom Summary Bar -->
+            <div class="bg-gray-50 p-6 md:p-8 border-t border-gray-200">
+                <div class="flex flex-col md:flex-row justify-end items-center gap-8 md:gap-12">
+                    <div class="w-full md:w-auto flex flex-col sm:flex-row gap-4">
+                        <a href="{{route('user.products')}}" class="px-8 py-3 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-white hover:border-gray-400 transition text-center">
+                            Continue Shopping
+                        </a>
+                        <a href="{{route('checkout.index')}}" class="px-8 py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-green-900/20 hover:bg-green-800 transform hover:-translate-y-0.5 transition text-center flex items-center justify-center gap-2">
+                            Checkout <i class="ph-bold ph-arrow-right"></i>
+                        </a>
                     </div>
                 </div>
-                @php
-                $final = $total + $shipping
-                @endphp
-
-                <a href="{{route('checkout.index')}}" class="block w-full px-6 py-3 bg-gray-900 text-white text-center rounded-lg hover:bg-gray-800 mb-3">
-                    Proceed to Checkout
-                </a>
-                <a href="{{route('products.index')}}" class="block w-full px-6 py-3 bg-gray-200 text-gray-900 text-center rounded-lg hover:bg-gray-300">
-                    Continue Shopping
-                </a>
             </div>
         </div>
+
+        @else
+        <!-- Empty Cart State -->
+        <div class="text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-200">
+            <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gray-50 mb-6 text-gray-300">
+                <i class="ph-duotone ph-shopping-bag text-5xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Your cart is currently empty</h2>
+            <p class="text-gray-500 mb-8 max-w-md mx-auto">Looks like you haven't added any items to your cart yet. Browse our products to find something you love.</p>
+            <a href="{{route('user.products')}}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-primary hover:bg-green-800 transition shadow-md">
+                Start Shopping
+            </a>
+        </div>
+        @endif
     </div>
 </main>
-
 
 @endsection

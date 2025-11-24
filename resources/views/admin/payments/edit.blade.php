@@ -39,32 +39,18 @@
                 </div>
 
                 <div class="p-6">
-                    <form action="" method="POST" class="space-y-4">
+                    <form action="{{route('payments.update',$payment->id)}}" method="POST" class="space-y-4">
                         @csrf
+                        @method("PUT")
 
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Order Id</label>
-                            <input type="text" name="order_id" class="w-full px-4 py-2 border border-gray-300 rounded " placeholder="Enter Order ID">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Payment Method</label>
-                            <select name="payment_method" class="w-full px-4 py-2 border border-gray-300 rounded ">
-                                <option value="">Select Method</option>
-                                <option value="esewa">Esewa</option>
-                                <option value="khalti">Khalti</option>
-                                <option value="cash">Cash</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Transaction Code</label>
-                            <input type="text" name="transaction_code" class="w-full px-4 py-2 border border-gray-300 rounded " placeholder="Enter Transaction code">
-                        </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Status</label>
                             <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded ">
                                 <option value="">Select Status</option>
+                                <option value="unpaid">Unpaid</option>
                                 <option value="pending">Pending</option>
                                 <option value="paid">Paid</option>
+                                <option value="failed">Failed</option>
                             </select>
                         </div>
 

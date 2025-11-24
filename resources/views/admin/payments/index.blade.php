@@ -32,12 +32,12 @@
                     <td class="px-6 py-4 text-sm text-gray-900">{{$payment->id}}</td>
                     <td class="px-6 py-4 text-sm text-gray-900">{{$payment->order->id}}</td>
                     <td class="px-6 py-4 text-sm text-gray-900">{{$payment->payment_method}}</td>
-                    <td class="px-6 py-4 text-sm text-gray-900">{{$payment->transanction_code}}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900">{{$payment->transaction_code}}</td>
                     <td class="px-6 py-4 text-sm">
                         <span class="font-bold text-xs">{{$payment->status}}</span>
                     </td>
                     <td class="px-6 py-4 text-sm">
-                        <button class="px-2 py-1 border bg-green-800 border-green-700 text-white rounded-3xl"><a href="{{route('payments.show',1)}}">View</a></button>
+                        <button class="px-2 py-1 border bg-green-800 border-green-700 text-white rounded-3xl"><a href="{{route('payments.show',$payment->id)}}">View</a></button>
 
                     </td>
                 </tr>

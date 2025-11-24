@@ -41,7 +41,17 @@
             </div>
 
         </div>
+        <div class="flex">
+            <button class=" border bg-yellow-800 rounded-3xl text-white px-3 py-2"><a href="{{route('payments.edit',$payment->id)}}">Change Status</a></button>
+            @if($payment->payment_method == 'Cash')
+            <form action="{{route('payments.randomGen',$payment->id)}}" method="post">
+                @csrf
+                @method('PUT')
+                <button type="submit" class=" border bg-green-800 rounded-3xl text-white px-3 py-2">Generate Unique Transaction Code</button>
+            </form>
 
+            @endif
+        </div>
 
     </div>
 </div>

@@ -14,8 +14,8 @@
 
 
         <aside class="w-64 bg-white shadow-sm">
-            <div class="p-6 border-b border-gray-300">
-                <h2 class="text-2xl font-bold text-gray-800">Firefly-Commerce</h2>
+            <div class="p-6 border-b flex justify-center border-gray-300">
+                <h2 class="text-2xl font-bold text-gray-800">Kina</h2>
             </div>
             <nav class="p-4 space-y-1">
                 <a href="{{route('admin')}}" class="flex items-center px-4 py-3 text-sm font-medium {{request()->routeIs('admin') ? 'bg-gray-800 text-white ' : 'text-gray-700'}} rounded-lg transition-colors">

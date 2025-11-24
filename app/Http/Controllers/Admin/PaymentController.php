@@ -44,17 +44,20 @@ class PaymentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Payment $payment)
     {
-        return view('admin.payments.edit');
+        return view('admin.payments.edit', compact('payment'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Payment $payment)
     {
-        //
+
+        $payment->status = $request->status;
+        $payment->update();
+        return redirect()->route('payments.index');
     }
 
     /**
@@ -63,5 +66,13 @@ class PaymentController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+    public function randomGen(Payment $payment)
+    {
+        $payment->update([
+            'transaction_code' => random_int(10000000, 99999999)
+        ]);
+
+        return redirect()->route('payments.index');
     }
 }

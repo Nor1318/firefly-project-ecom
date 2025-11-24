@@ -16,11 +16,18 @@ class CartController extends Controller
 
     public function addToCart(Request $request, $product_id)
     {
-        if (Auth::check() && Auth::user()->role != 'admin') {
+
+        if (Auth::check()) {
+
+            if (Auth::user()->role == 'admin') {
+                return redirect()->back()->with('error', 'Admins cannot shop.');
+            }
 
             $user = Auth::user();
-
             $product = Product::findOrFail($product_id);
+
+            $qty = (int) $request->input('quantity', 1);
+
 
             $cart = Cart::firstOrCreate(['user_id' => $user->id]);
 
@@ -28,26 +35,30 @@ class CartController extends Controller
                 ->where('product_id', $product_id)
                 ->first();
 
+            $existingQtyInCart = $cartItem ? $cartItem->quantity : 0;
+
+            if (($existingQtyInCart + $qty) > $product->quantity) {
+                return redirect()->back()->with('error', 'Not enough items in stock. You already have ' . $existingQtyInCart . ' in your cart.');
+            }
+
             if ($cartItem) {
-                $cartItem->quantity += 1;
+                $cartItem->quantity += $qty;
                 $cartItem->save();
             } else {
                 CartItem::create([
                     'cart_id' => $cart->id,
                     'product_id' => $product_id,
-                    'quantity' => 1,
+                    'quantity' => $qty,
                 ]);
             }
 
-            if ($request->has('product_show')) {
-
-                return redirect()->route('cart.index');
-            }
             return redirect()->back()->with('success', 'Product added to the cart.');
         } else {
-            return redirect()->route('login.show');
+            return redirect()->route('login.show')->with('error', 'Please login to add items to cart.');
         }
     }
+
+
 
     public function index()
     {
@@ -100,24 +111,27 @@ class CartController extends Controller
      */
     public function update(Request $request, $product_id)
     {
+
         if (Auth::check()) {
             $user = Auth::user();
             $cart = Cart::where('user_id', $user->id)->first();
             $product = Product::find($product_id)->quantity;
+            $inputName = 'quantity_' . $product_id;
 
-            $request->validate(
-                [
-                    'quantity' => 'min:1|max:' . $product,
-                ]
-            );
+            $request->validate([
+                $inputName => 'required|numeric|min:1|max:' . $product
+            ], [
+                $inputName . '.max' => 'Only ' . $product . ' items left in stock.'
+            ]);
 
             $cartItem = CartItem::where('cart_id', $cart->id)
                 ->where('product_id', $product_id)
                 ->first();
 
+
             if ($cartItem) {
-                if ($request->quantity >= $product) {
-                    $newQuantity = max(1, $request->quantity);
+                if ($request->$inputName <= $product) {
+                    $newQuantity = max(1, $request->$inputName);
                     $cartItem->quantity = $newQuantity;
                     $cartItem->save();
                 } else {

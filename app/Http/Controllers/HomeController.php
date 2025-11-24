@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -10,6 +11,7 @@ class HomeController extends Controller
     public function __invoke()
     {
         $products = Product::query()->latest()->take(4)->get();
-        return view('home', compact('products'));
+        $categories = Category::has('products')->latest()->take(4)->get();
+        return view('home', compact('products', 'categories'));
     }
 }

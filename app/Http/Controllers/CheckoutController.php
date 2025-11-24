@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderMail;
 use App\Models\Address;
 use App\Models\Cart;
 use App\Models\Order;
@@ -9,6 +10,7 @@ use App\Models\OrderItem;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Xentixar\EsewaSdk\Esewa;
 
 class CheckoutController extends Controller
@@ -77,6 +79,7 @@ class CheckoutController extends Controller
         $cart = Cart::where('user_id', Auth::id())->first();
         $cartItems = $cart->cartItems()->with('product')->get();
 
+
         $subtotal = $cartItems->sum(function ($item) {
             return $item->product->price * $item->quantity;
         });
@@ -108,12 +111,20 @@ class CheckoutController extends Controller
                 'quantity' => $item->quantity,
                 'amount_per_item' => $item->product->price,
             ]);
+            $item->product->decrement('quantity', $item->quantity);
         }
 
         $cart->cartItems()->delete();
 
 
         if ($validated['payment_method'] === 'esewa') {
+
+            Payment::create([
+                'order_id' => $order->id,
+                'payment_method' => 'esewa',
+                'status' => 'pending',
+                'amount' => $total,
+            ]);
             $esewa = new Esewa();
             $callbackRoute = route('esewa.callback');
             $esewa->config($callbackRoute, $callbackRoute, $total, $order->id . "-MYSYSTEM");
@@ -126,6 +137,7 @@ class CheckoutController extends Controller
                 'status' => 'pending',
             ]);
 
+
             return redirect()->route('order.index', $order->id);
         }
     }
@@ -135,31 +147,39 @@ class CheckoutController extends Controller
         $esewa = new Esewa();
         $data = $esewa->decode();
 
-        if ($data) {
-            if ($data['status'] == 'COMPLETE') {
-                $paymentId = explode('-', $data['transaction_uuid'])[0];
-                $payment = Payment::find($paymentId);
-                if ($payment) {
-                    $payment->update([
-                        'status' => 'completed',
-                        'transaction_code' => $data['transaction_code'],
-                    ]);
-                } else {
-                    dd(1);
-                }
-            } else {
-                $paymentId = explode('-', $data['transaction_uuid'])[0];
-                $payment = Payment::find($paymentId);
-                if ($payment) {
-                    $payment->update([
-                        'status' => 'failed'
-                    ]);
-                } else {
-                    return redirect()->back();
-                }
-            }
+        if (!$data) {
+            return redirect()->route('cart.index')->with("error", "Invalid Payment Request");
+        }
+
+        $orderId = explode('-', $data['transaction_uuid'])[0];
+
+
+        $order = Order::find($orderId);
+        $payment = Payment::where('order_id', $orderId)->first();
+
+        if (!$order || !$payment) {
+            return redirect()->route('home')->with('error', 'Order not found.');
+        }
+
+        if ($data['status'] === 'COMPLETE') {
+
+            $payment->update([
+                'status' => 'paid',
+                'transaction_code' => $data['transaction_code'] ?? null,
+            ]);
+
+            $order->update(['status' => 'confirmed']);
+            Mail::to($order->user->email)->send(new OrderMail($order));
+
+            return redirect()->route('order.index')->with('success', 'Payment Successful! Order placed.');
         } else {
-            return redirect()->route('order.index')->with("failedPayment", "Your Payment Failed");
+
+            $payment->update([
+                'status' => 'failed'
+            ]);
+            //  $order->update(['status' => 'cancelled']);
+
+            return redirect()->route('order.index')->with('error', 'Payment Failed. Please try again.');
         }
     }
     /**

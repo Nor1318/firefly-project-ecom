@@ -11,12 +11,13 @@ class UserProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $categories = Category::query()->get();
-
-        $products = Product::paginate(10);
-
+        $products = Product::paginate(12);
+        if ($request->category) {
+            $products = Product::where('category_id', $request->category)->paginate(12);
+        }
         return view('products.index', compact('products', 'categories'));
     }
 
