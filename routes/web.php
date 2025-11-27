@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController as ControllersOrderController;
+use App\Http\Controllers\TypesenseSetupController;
 use App\Http\Controllers\UserCategoryController;
 use App\Http\Controllers\UserOrderController;
 use App\Http\Controllers\UserProductController;
@@ -37,6 +38,8 @@ Route::resource('/user/order', ControllersOrderController::class);
 Route::get('/user/profile', function () {
     return view('profile');
 })->name('profile');
+Route::get('/typesense/setup', [TypesenseSetupController::class, 'setup']);
+Route::get('/typesense/reindex', [TypesenseSetupController::class, 'reindex']);
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'admin'])->name('admin');
