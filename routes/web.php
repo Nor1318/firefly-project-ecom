@@ -38,8 +38,8 @@ Route::resource('/user/order', ControllersOrderController::class);
 Route::get('/user/profile', function () {
     return view('profile');
 })->name('profile');
-Route::get('/typesense/setup', [TypesenseSetupController::class, 'setup']);
-Route::get('/typesense/reindex', [TypesenseSetupController::class, 'reindex']);
+// Route::get('/typesense/setup', [TypesenseSetupController::class, 'setup']);
+// Route::get('/typesense/reindex', [TypesenseSetupController::class, 'reindex']);
 Route::post('/checkout/apply-coupon', [CheckoutController::class, 'applyCoupon'])->name('checkout.apply-coupon');
 Route::post('/checkout/remove-coupon', [CheckoutController::class, 'removeCoupon'])->name('checkout.remove-coupon');
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -74,3 +74,37 @@ Route::get('/test-email', function () {
     
     return 'Test email sent to Mailtrap!';
 });
+// Email Verification Routes
+use App\Http\Controllers\Auth\VerificationController;
+
+Route::get('/email/verify', [VerificationController::class, 'show'])
+    ->middleware('auth')
+    ->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+    ->middleware(['auth', 'signed'])
+    ->name('verification.verify');
+
+Route::post('/email/verification-notification', [VerificationController::class, 'resend'])
+    ->middleware(['auth', 'throttle:6,1'])
+    ->name('verification.send');
+
+// Password Reset Routes
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+
+Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])
+    ->middleware('guest')
+    ->name('password.request');
+
+Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->middleware('guest')
+    ->name('password.email');
+
+Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])
+    ->middleware('guest')
+    ->name('password.reset');
+
+Route::post('/password/reset', [ResetPasswordController::class, 'reset'])
+    ->middleware('guest')
+    ->name('password.update');

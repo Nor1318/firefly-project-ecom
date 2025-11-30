@@ -40,6 +40,11 @@
                 @error('password')
                 <div class="text-red-500">{{$message}}</div>
                 @enderror
+                <div class="flex items-center justify-end mt-2">
+                    <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
+                        {{ __('Forgot your password?') }}
+                    </a>
+                </div>
             </div>
 
 
