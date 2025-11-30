@@ -41,8 +41,31 @@ class Product extends Model
         );
     }
 
+    use \Laravel\Scout\Searchable;
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array<string, mixed>
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => (string) $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'price' => (float) $this->price,
+            'category_id' => (int) $this->category_id,
+            'category_name' => $this->category->name ?? '',
+            'created_at' => $this->created_at->timestamp,
+        ];
+    }
+
     /**
      * Get recommended products based on similarity scoring
+     *
+     * @param int $limit
+     * @return \Illuminate\Support\Collection
      */
     public function getRecommendations($limit = 6)
     {
