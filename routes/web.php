@@ -40,7 +40,8 @@ Route::get('/user/profile', function () {
 })->name('profile');
 Route::get('/typesense/setup', [TypesenseSetupController::class, 'setup']);
 Route::get('/typesense/reindex', [TypesenseSetupController::class, 'reindex']);
-
+Route::post('/checkout/apply-coupon', [CheckoutController::class, 'applyCoupon'])->name('checkout.apply-coupon');
+Route::post('/checkout/remove-coupon', [CheckoutController::class, 'removeCoupon'])->name('checkout.remove-coupon');
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'admin'])->name('admin');
     Route::resource('/admin/users', UserController::class);
