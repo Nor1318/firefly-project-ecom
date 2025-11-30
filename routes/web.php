@@ -61,3 +61,16 @@ Route::get('/users', function () {
 })->name('users');
 
 Route::get('esewa-callback', [CheckoutController::class, 'esewaCallback'])->name('esewa.callback');
+
+
+// routes/web.php
+Route::get('/test-email', function () {
+    $user = (object) [
+        'name' => 'Test User',
+        'email' => 'test@example.com'
+    ];
+
+    \Mail::to($user->email)->send(new \App\Mail\WelcomeEmail($user));
+    
+    return 'Test email sent to Mailtrap!';
+});
