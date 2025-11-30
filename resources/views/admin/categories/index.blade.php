@@ -43,6 +43,9 @@
             </tbody>
         </table>
     </div>
+    <div class="p-4">
+        {{ $categories->links() }}
+    </div>
 </div>
 
 @endsection

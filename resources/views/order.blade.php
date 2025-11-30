@@ -140,5 +140,9 @@
         @endforelse
     </div>
 
+    <div class="mt-8">
+        {{ $orders->links() }}
+    </div>
+
 </main>
 @endsection
