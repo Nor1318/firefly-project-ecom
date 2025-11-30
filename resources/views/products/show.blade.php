@@ -161,5 +161,89 @@
         </div>
     </div>
 
+    <!-- Recommended Products Section -->
+    @if($recommendations && $recommendations->count() > 0)
+    <section class="mt-20 pt-12 border-t border-gray-200">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900">You May Also Like</h2>
+                <p class="text-gray-500 text-sm mt-1">Recommended products based on this item</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            @foreach($recommendations as $recommendedProduct)
+            <div class="group bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-primary/30 transition-all duration-300">
+                
+                <!-- Product Image -->
+                <a href="{{ route('products.show', $recommendedProduct->slug) }}" class="block relative aspect-square bg-gray-100 overflow-hidden">
+                    <img src="/storage/{{ $recommendedProduct->image }}" 
+                         alt="{{ $recommendedProduct->name }}"
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    
+                    <!-- Category Badge -->
+                    @if($recommendedProduct->category)
+                    <div class="absolute top-2 left-2">
+                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold bg-white/90 backdrop-blur-sm text-gray-700 shadow-sm">
+                            {{ $recommendedProduct->category->name }}
+                        </span>
+                    </div>
+                    @endif
+
+                    <!-- Stock Badge -->
+                    <div class="absolute top-2 right-2">
+                        @if($recommendedProduct->quantity > 0)
+                            @if($recommendedProduct->quantity < 10)
+                            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold bg-orange-500 text-white shadow-sm">
+                                <i class="ph-fill ph-warning text-xs mr-1"></i>
+                                Low Stock
+                            </span>
+                            @endif
+                        @else
+                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold bg-red-500 text-white shadow-sm">
+                            Out of Stock
+                        </span>
+                        @endif
+                    </div>
+                </a>
+
+                <!-- Product Info -->
+                <div class="p-4">
+                    <a href="{{ route('products.show', $recommendedProduct->slug) }}" class="block">
+                        <h3 class="font-bold text-gray-900 text-sm md:text-base line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+                            {{ $recommendedProduct->name }}
+                        </h3>
+                    </a>
+
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-lg md:text-xl font-bold text-primary">
+                            Rs {{ number_format($recommendedProduct->price, 2) }}
+                        </span>
+                    </div>
+
+                    <!-- Add to Cart Button -->
+                    @if($recommendedProduct->quantity > 0)
+                    <form action="{{ route('cart.add', $recommendedProduct->id) }}" method="GET" class="w-full">
+                        @csrf
+                        <input type="hidden" name="quantity" value="1">
+                        <input type="hidden" name="source_page" value="recommendations">
+                        <button type="submit" class="w-full bg-gray-900 hover:bg-primary text-white font-medium py-2.5 px-4 rounded-lg text-sm transition-all duration-200 flex items-center justify-center gap-2 group-hover:shadow-lg">
+                            <i class="ph-bold ph-shopping-cart text-base"></i>
+                            <span class="hidden sm:inline">Add to Cart</span>
+                            <span class="sm:hidden">Add</span>
+                        </button>
+                    </form>
+                    @else
+                    <button disabled class="w-full bg-gray-300 text-gray-500 font-medium py-2.5 px-4 rounded-lg text-sm cursor-not-allowed">
+                        Out of Stock
+                    </button>
+                    @endif
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </section>
+    @endif
+
 </main>
 @endsection

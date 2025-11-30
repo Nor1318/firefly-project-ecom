@@ -85,6 +85,93 @@
             <h1 class="text-3xl font-bold text-gray-900">Checkout</h1>
         </div>
 
+        <!-- Coupon Code Section (Outside main form) -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-primary">
+                    <i class="ph-fill ph-ticket text-xl"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900">Coupon Code</h2>
+            </div>
+
+            <!-- Success Messages -->
+            @if(session('success'))
+            <div class="mb-4 bg-green-50 border border-green-200 rounded-xl p-4 animate-fade-in">
+                <div class="flex items-center gap-2">
+                    <i class="ph-fill ph-check-circle text-green-500 text-lg"></i>
+                    <p class="text-green-800 text-sm font-medium">{{ session('success') }}</p>
+                </div>
+            </div>
+            @endif
+
+            <!-- Error Messages -->
+            @if(session('error'))
+            <div class="mb-4 bg-red-50 border border-red-200 rounded-xl p-4 animate-fade-in">
+                <div class="flex items-center gap-2">
+                    <i class="ph-fill ph-warning-circle text-red-500 text-lg"></i>
+                    <p class="text-red-800 text-sm font-medium">{{ session('error') }}</p>
+                </div>
+            </div>
+            @endif
+
+            <!-- Applied Coupon Display -->
+            @if(session('applied_coupon'))
+            <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-4 animate-fade-in">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <i class="ph-fill ph-check-circle text-green-500 text-lg"></i>
+                        <div>
+                            <span class="font-bold text-green-800">Coupon Applied!</span>
+                            <span class="text-green-600 ml-2">{{ session('applied_coupon.code') }}</span>
+                            <p class="text-green-600 text-sm mt-1">Discount: Rs {{ number_format(session('applied_coupon.discount'), 2) }}</p>
+                        </div>
+                    </div>
+                    <form action="{{ route('checkout.remove-coupon') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-medium flex items-center gap-1">
+                            <i class="ph-fill ph-x"></i>
+                            Remove
+                        </button>
+                    </form>
+                </div>
+            </div>
+            @endif
+
+            <!-- Coupon Form -->
+            @if(!session('applied_coupon'))
+            <form action="{{ route('checkout.apply-coupon') }}" method="POST" class="flex gap-3">
+                @csrf
+                <div class="flex-grow">
+                    <input type="text" 
+                           name="coupon_code" 
+                           value="{{ old('coupon_code') }}"
+                           class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all @error('coupon_code') border-red-300 bg-red-50 @enderror" 
+                           placeholder="Enter coupon code" 
+                           required>
+                    @error('coupon_code')
+                        <p class="text-red-600 text-xs mt-2 flex items-center gap-1">
+                            <i class="ph-fill ph-warning"></i>
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+                <button type="submit" class="px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-[#1e5616] transition-all whitespace-nowrap flex items-center gap-2">
+                    <i class="ph-fill ph-ticket"></i>
+                    Apply
+                </button>
+            </form>
+            @endif
+
+            <!-- Sample Coupon Hints -->
+            <div class="mt-4">
+                <p class="text-xs text-gray-500 mb-2">Try these test coupons:</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">WELCOME10 (10% off)</span>
+                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">SAVE5 (Rs 5 off)</span>
+                </div>
+            </div>
+        </div>
+
         <form action="" method="POST">
             @csrf
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
@@ -223,55 +310,67 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- RIGHT COLUMN: Order Summary -->
-                <div class="lg:col-span-4">
-                    <div class="bg-white rounded-2xl shadow-lg shadow-gray-200/50 border border-gray-100 p-6 sticky top-24">
-                        <h2 class="text-lg font-bold text-gray-900 mb-6 flex items-center justify-between">
-                            Order Summary
-                            <span class="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-md">{{ count($cartItems) }} items</span>
-                        </h2>
-
-                        <div class="space-y-4 mb-6 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
-                            @foreach($cartItems as $item)
-                            <div class="flex gap-4 items-start">
-                                <div class="w-14 h-14 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden border border-gray-200">
-                                    <img src="/storage/{{$item->product->image}}" alt="{{$item->product->name}}" class="w-full h-full object-cover">
-                                </div>
-                                <div class="flex-grow">
-                                    <p class="text-sm font-bold text-gray-900 line-clamp-1">{{$item->product->name}}</p>
-                                    <p class="text-xs text-gray-500 mt-0.5">Qty: {{$item->quantity}}</p>
-                                </div>
-                                <p class="text-sm font-bold text-gray-900">Rs {{$item->product->price * $item->quantity}}</p>
-                            </div>
-                            @endforeach
-                        </div>
-
-                        <div class="border-t border-dashed border-gray-200 pt-4 space-y-3">
-                            <div class="flex justify-between text-gray-600 text-sm">
-                                <span>Subtotal</span>
-                                <span class="font-medium">Rs {{$subtotal}}</span>
-                            </div>
-                            <div class="flex justify-between text-gray-600 text-sm">
-                                <span>Shipping</span>
-                                <span class="font-medium">Rs {{$shipping}}</span>
-                            </div>
-                            <div class="border-t border-gray-100 pt-3 flex justify-between items-end">
-                                <span class="font-bold text-gray-900">Total</span>
-                                <span class="text-2xl font-bold text-primary">Rs {{$total}}</span>
-                            </div>
-                        </div>
-
-                        <div class="mt-8 space-y-3">
-                            <button type="submit" class="w-full py-4 bg-primary text-white rounded-xl font-bold text-sm shadow-lg shadow-green-900/20 hover:bg-[#1e5616] transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
-                                <span>Place Order</span>
-                                <i class="ph-bold ph-arrow-right"></i>
-                            </button>
+               
 
 
-                        </div>
-                    </div>
+               
+               <!-- RIGHT COLUMN: Order Summary -->
+<div class="lg:col-span-4">
+    <div class="bg-white rounded-2xl shadow-lg shadow-gray-200/50 border border-gray-100 p-6 sticky top-24">
+        <h2 class="text-lg font-bold text-gray-900 mb-6 flex items-center justify-between">
+            Order Summary
+            <span class="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-md">{{ count($cartItems) }} items</span>
+        </h2>
+
+        <div class="space-y-4 mb-6 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+            @foreach($cartItems as $item)
+            <div class="flex gap-4 items-start">
+                <div class="w-14 h-14 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden border border-gray-200">
+                    <img src="/storage/{{$item->product->image}}" alt="{{$item->product->name}}" class="w-full h-full object-cover">
                 </div>
+                <div class="flex-grow">
+                    <p class="text-sm font-bold text-gray-900 line-clamp-1">{{$item->product->name}}</p>
+                    <p class="text-xs text-gray-500 mt-0.5">Qty: {{$item->quantity}}</p>
+                </div>
+                <p class="text-sm font-bold text-gray-900">Rs {{$item->product->price * $item->quantity}}</p>
+            </div>
+            @endforeach
+        </div>
+
+        <div class="border-t border-dashed border-gray-200 pt-4 space-y-3">
+            <div class="flex justify-between text-gray-600 text-sm">
+                <span>Subtotal</span>
+                <span class="font-medium">Rs {{$subtotal}}</span>
+            </div>
+            
+            @if(session('applied_coupon'))
+            <div class="flex justify-between text-green-600 text-sm">
+                <span>Discount</span>
+                <span class="font-medium">- Rs {{ number_format(session('applied_coupon.discount'), 2) }}</span>
+            </div>
+            @endif
+            
+            <div class="flex justify-between text-gray-600 text-sm">
+                <span>Shipping</span>
+                <span class="font-medium">Rs {{$shipping}}</span>
+            </div>
+            
+            <div class="border-t border-gray-100 pt-3 flex justify-between items-end">
+                <span class="font-bold text-gray-900">Total</span>
+                <span class="text-2xl font-bold text-primary">
+                    Rs {{ number_format($total, 2) }}
+                </span>
+            </div>
+        </div>
+
+        <div class="mt-8 space-y-3">
+            <button type="submit" class="w-full py-4 bg-primary text-white rounded-xl font-bold text-sm shadow-lg shadow-green-900/20 hover:bg-[#1e5616] transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                <span>Place Order</span>
+                <i class="ph-bold ph-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
             </div>
         </form>
     </main>

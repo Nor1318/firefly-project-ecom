@@ -116,6 +116,10 @@ class UserProductController extends Controller
     public function show(Product $product)
     {
         $product->load('category');
-        return view('products.show', compact('product'));
+        
+        // Get recommended products
+        $recommendations = $product->getRecommendations(6);
+        
+        return view('products.show', compact('product', 'recommendations'));
     }
 }
