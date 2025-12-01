@@ -1,120 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('../../components/layouts.admin.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Product - Admin Dashboard</title>
-    @vite('resources/css/app.css')
-</head>
+@section('title', 'User Details - Admin Dashboard')
 
-<body class="bg-gray-100">
+@section('heading','User')
 
-    <div class="min-h-screen flex">
+@section('content')
 
-        <aside class="w-64 bg-white">
-            <div class="p-4 text-xl font-bold text-center border-b-1">
-                Admin Panel
-            </div>
-            <nav class="p-4 space-y-2">
-                <a href="{{route('admin')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Dashboard</a>
-                <a href="{{route('users.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">User</a>
-                <a href="{{route('categories.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Category</a>
-                <a href="{{route('products.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Product</a>
-                <a href="{{route('orders.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Order</a>
-                <a href="{{route('payments.index')}}" class="block px-4 py-2 rounded click focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">Payment</a>
-            </nav>
-        </aside>
-
-        <main class="flex-auto p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h1 class="text-2xl font-semibold">View User</h1>
-                <button class="px-4 py-2 bg-gray-800 text-white rounded">Logout</button>
-            </div>
-
-            <div class="bg-white rounded-lg shadow">
-                <div class="p-4 border-b flex justify-between m-2">
-                    <h2 class="text-lg font-semibold">User Details</h2>
-                    <button onclick="history.back()" class="px-4 py-2 bg-blue-800 text-white rounded">Back</button>
-                </div>
-
-                <div class="p-6">
-                    <div class="space-y-4">
-
-
-                        <div class=" pb-4">
-                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">ID</label>
-                            <p class="text-sm text-gray-900">{{$user->id}}</p>
-                        </div>
-
-                        <div class=" pb-4">
-                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Name</label>
-                            <p class="text-sm text-gray-900">{{$user->name}}</p>
-                        </div>
-
-                        <div class=" pb-4">
-                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Email</label>
-                            <p class="text-sm text-gray-900">{{$user->email}}</p>
-                        </div>
-
-                        <div class="">
-                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Role</label>
-                            <p class="text-sm text-gray-900">{{$user->role}}</p>
-                        </div>
-
-
-                    </div>
-
-                    <div class="flex gap-2 mt-6 pt-4">
-                        <button class="px-4 py-2 bg-yellow-700 text-white rounded"><a href="{{route('users.edit', $user->id)}}">Edit</a></button>
-
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow">
-                <div class="p-4 border-b flex justify-between m-2">
-                    <h2 class="text-lg font-semibold">Address List</h2>
-
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Street-1</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Street-2</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">City</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">State</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Country</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white">
-                            @foreach($addresses as $address)
-                            <tr>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{$address->id}}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{$address->street_address_1}}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{$address->street_address_2}}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900 ">{{$address->city}}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900 ">{{$address->state}}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900 ">{{$address->country}}</td>
-
-                                <td class="px-6 py-4 text-sm">
-                                    <button class="px-2 py-1 border bg-green-800 border-green-700 text-white rounded-3xl"><a href="{{route('addresses.show',  [$user->id, $address->id])}}">View</a></button>
-
-
-                                </td>
-                            </tr>
-                            @endforeach
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
-
+<div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+        <div>
+            <h2 class="text-lg font-semibold text-gray-900">User Details</h2>
+            <p class="text-sm text-gray-500 mt-1">View user account information</p>
+        </div>
+        <div class="flex gap-3">
+            <a href="{{route('users.index')}}" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                Back to List
+            </a>
+            <a href="{{route('users.edit', $user->id)}}" class="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors">
+                Edit User
+            </a>
+        </div>
     </div>
 
-</body>
+    <div class="p-6 max-w-3xl">
+        <div class="bg-gray-50 rounded-lg border border-gray-100 p-6 space-y-8">
+            {{-- User Header --}}
+            <div class="flex items-center gap-4 border-b border-gray-200 pb-6">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-2xl font-bold text-purple-600">
+                    {{substr($user->name, 0, 1)}}
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900">{{$user->name}}</h3>
+                    <p class="text-gray-500">{{$user->email}}</p>
+                </div>
+                <div class="ml-auto">
+                    <span class="px-3 py-1 rounded-full text-sm font-medium {{$user->role == 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}}">
+                        {{ucfirst($user->role)}}
+                    </span>
+                </div>
+            </div>
 
-</html>
+            {{-- User Stats --}}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <p class="text-sm text-gray-500">User ID</p>
+                    <p class="text-lg font-semibold text-gray-900">#{{$user->id}}</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <p class="text-sm text-gray-500">Joined Date</p>
+                    <p class="text-lg font-semibold text-gray-900">{{$user->created_at->format('M d, Y')}}</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <p class="text-sm text-gray-500">Email Verified</p>
+                    <p class="text-lg font-semibold {{$user->email_verified_at ? 'text-green-600' : 'text-yellow-600'}}">
+                        {{$user->email_verified_at ? 'Verified' : 'Pending'}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@endsection

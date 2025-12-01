@@ -1,51 +1,74 @@
 @extends('../../components/layouts.admin.app')
 
-@section('title', 'Order List - Admin Dashboard')
+@section('title', 'Orders - Admin Dashboard')
 
-@section('heading','Order')
+@section('heading','Orders')
 
 @section('content')
 
-
-
-<div class="bg-white rounded-lg shadow  ">
-    <div class="p-4 border-b flex justify-between m-2">
-        <h2 class="text-lg font-semibold">Orders List</h2>
-
+<div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    {{-- Header --}}
+    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+        <div>
+            <h2 class="text-lg font-semibold text-gray-900">Orders List</h2>
+            <p class="text-sm text-gray-500 mt-1">Manage customer orders</p>
+        </div>
     </div>
-    <div>
+
+    {{-- Table --}}
+    <div class="overflow-x-auto">
         <table class="w-full">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order ID</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User ID</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Address ID</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
+            <thead>
+                <tr class="border-b border-gray-200 bg-gray-50">
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
                 </tr>
             </thead>
-            <tbody class="bg-white ">
+            <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($orders as $order)
-                <tr>
-                    <td class="px-6 py-4 text-sm text-gray-900">{{$order->id}}</td>
-                    <td class="px-6 py-4 text-sm text-gray-900">{{$order->user->id}}</td>
-                    <td class="px-6 py-4 text-sm text-gray-900">{{$order->address->id}}</td>
-                    <td class="px-6 py-4 text-sm text-gray-900">
-                        <span class="px-2 py-1 font-bold text-xs">{{$order->status}}</span>
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="text-sm font-medium text-gray-900">#{{$order->id}}</span>
                     </td>
-                    <td class="px-6 py-4 text-sm">
-                        <button class="px-2 py-1 border bg-green-800 border-green-700 text-white rounded-3xl"><a href="{{route('orders.show',$order->id)}}">View</a></button>
-
-
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="text-sm text-gray-600">{{$order->user->name}}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="text-sm text-gray-600">ID: {{$order->address->id}}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        @if($order->status == 'completed')
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Completed
+                        </span>
+                        @elseif($order->status == 'pending')
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            Pending
+                        </span>
+                        @elseif($order->status == 'processing')
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            Processing
+                        </span>
+                        @else
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                            {{ucfirst($order->status)}}
+                        </span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <a href="{{route('orders.show',$order->id)}}" class="text-purple-600 hover:text-purple-900 font-medium">View Details</a>
                     </td>
                 </tr>
                 @endforeach
-
-
             </tbody>
         </table>
     </div>
-    <div class="p-4">
+
+    {{-- Pagination --}}
+    <div class="px-6 py-4 border-t border-gray-200">
         {{ $orders->links() }}
     </div>
 </div>
