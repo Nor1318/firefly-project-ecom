@@ -1,5 +1,27 @@
 @import 'tailwindcss';
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Trix Editor Styles */
+trix-editor {
+    min-height: 200px;
+    max-height: 500px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    padding: 0.5rem 1rem;
+}
+
+trix-editor:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
