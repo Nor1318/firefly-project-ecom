@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
@@ -80,11 +80,11 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => 'required|string|min:2|max:50',
-            'slug' => 'required|min:2|max:255|',
+            'slug' => 'required|min:2|max:255|unique:products,slug,' . $product->id,
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
             'description' => 'nullable|string|max:1000',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'category_id' => 'required|exists:categories,id',
         ]);
         $product->name = $request->name;

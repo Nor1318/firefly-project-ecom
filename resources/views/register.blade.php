@@ -1,63 +1,97 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('components.layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-    <form method="post" action="{{route('register')}}" class="w-full max-w-lg mx-auto bg-white p-10 rounded-xl shadow-lg">
-        @csrf
-        <h2 class="text-3xl font-bold mb-8 text-center text-gray-800">Create Account</h2>
-
-        <div class="mb-6">
-            <label for="name" class="block text-gray-700 text-lg font-semibold mb-3">Full Name</label>
-            <input type="text" id="name" name="name"
-                class="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg ">
-            @error('name')
-            <div class="text-red-500">{{$message}}</div>
-            @enderror
-        </div>
-
-        <div class="mb-6">
-            <label for="email" class="block text-gray-700 text-lg font-semibold mb-3">Email Address</label>
-            <input type="email" id="email" name="email"
-                class="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg ">
-            @error('email')
-            <div class="text-red-500">{{$message}}</div>
-            @enderror
-        </div>
-
-        <div class="mb-6">
-            <label for="password" class="block text-gray-700 text-lg font-semibold mb-3">Password</label>
-            <input type="password" id="password" name="password"
-                class="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg">
-            @error('password')
-            <div class="text-red-500">{{$message}}</div>
-            @enderror
-        </div>
-
-        <div class="mb-8">
-            <label for="password_confirmation" class="block text-gray-700 text-lg font-semibold mb-3">Confirm Password</label>
-            <input type="password" id="password_confirmation" name="password_confirmation"
-                class="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg focus:outline-none ">
-        </div>
-
-        <button type="submit"
-            class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg text-lg focus:outline-none focus:shadow-outline mb-6">
-            Register
-        </button>
-
+@section('content')
+<div class="min-h-[80vh] flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-3xl shadow-xl border border-gray-100">
         <div class="text-center">
-            <p class="text-gray-600 text-lg">
-                Already registered?
-                <a href="{{route('login.show')}}" class="text-blue-500 hover:text-blue-700 font-semibold">Login here</a>
+            <h2 class="text-3xl font-bold text-gray-900">Create Account 🚀</h2>
+            <p class="mt-2 text-sm text-gray-600">
+                Join Kina today for exclusive deals and faster checkout
             </p>
         </div>
-    </form>
-</body>
+        
+        <form class="mt-8 space-y-6" method="post" action="{{route('register')}}">
+            @csrf
+            
+            <div class="space-y-5">
+                <!-- Name -->
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="ph-bold ph-user text-gray-400"></i>
+                        </div>
+                        <input id="name" name="name" type="text" required 
+                            class="appearance-none relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm transition" 
+                            placeholder="John Doe">
+                    </div>
+                    @error('name')
+                        <p class="mt-1 text-sm text-red-500">{{$message}}</p>
+                    @enderror
+                </div>
 
-</html>
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="ph-bold ph-envelope text-gray-400"></i>
+                        </div>
+                        <input id="email" name="email" type="email" autocomplete="email" required 
+                            class="appearance-none relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm transition" 
+                            placeholder="you@example.com">
+                    </div>
+                    @error('email')
+                        <p class="mt-1 text-sm text-red-500">{{$message}}</p>
+                    @enderror
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="ph-bold ph-lock-key text-gray-400"></i>
+                        </div>
+                        <input id="password" name="password" type="password" autocomplete="new-password" required 
+                            class="appearance-none relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm transition" 
+                            placeholder="••••••••">
+                    </div>
+                    @error('password')
+                        <p class="mt-1 text-sm text-red-500">{{$message}}</p>
+                    @enderror
+                </div>
+
+                <!-- Confirm Password -->
+                <div>
+                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="ph-bold ph-lock-key text-gray-400"></i>
+                        </div>
+                        <input id="password_confirmation" name="password_confirmation" type="password" required 
+                            class="appearance-none relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm transition" 
+                            placeholder="••••••••">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-primary hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-200">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <i class="ph-bold ph-user-plus text-purple-300 group-hover:text-purple-200"></i>
+                    </span>
+                    Create Account
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="text-sm text-gray-600">
+                Already have an account?
+                <a href="{{route('login.show')}}" class="font-bold text-primary hover:text-purple-700 transition">Sign in here</a>
+            </p>
+        </div>
+    </div>
+</div>
+@endsection
