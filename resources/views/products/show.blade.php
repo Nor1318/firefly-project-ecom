@@ -48,7 +48,7 @@
         <!-- Product Details -->
         <div class="flex flex-col h-full" x-data="{ 
             qty: 1, 
-            max: {{ $product->quantity }},
+            max: {{ $availableQty }},
             increment() { if(this.qty < this.max) this.qty++ },
             decrement() { if(this.qty > 1) this.qty-- }
         }">
@@ -92,6 +92,21 @@
                     </span>
                 @endif
             </div>
+
+            <!-- Cart Quantity Info -->
+            @if($qtyInCart > 0)
+            <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                <div class="flex items-center gap-2 text-blue-800">
+                    <i class="ph-fill ph-shopping-cart text-lg"></i>
+                    <span class="text-sm font-medium">You already have <strong>{{ $qtyInCart }}</strong> {{ Str::plural('item', $qtyInCart) }} in your cart</span>
+                </div>
+                @if($availableQty > 0)
+                <p class="text-xs text-blue-600 mt-1 ml-7">You can add {{ $availableQty }} more</p>
+                @else
+                <p class="text-xs text-blue-600 mt-1 ml-7">Maximum quantity reached</p>
+                @endif
+            </div>
+            @endif
 
             <!-- Description -->
             <div class="prose prose-purple text-gray-600 mb-8 leading-relaxed">

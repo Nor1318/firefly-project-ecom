@@ -123,7 +123,23 @@ class UserProductController extends Controller
         // Get recommended products
         $recommendations = $product->getRecommendations(6);
         
+        // Calculate quantity already in cart
+        $qtyInCart = 0;
+        if (Auth::check()) {
+            $cart = Auth::user()->cart;
+            if ($cart) {
+                $cartItem = $cart->cartItems()->where('product_id', $product->id)->first();
+                $qtyInCart = $cartItem ? $cartItem->quantity : 0;
+            }
+        } else {
+            // Guest user - check session cart
+            $sessionCart = Session::get('cart', []);
+            $qtyInCart = isset($sessionCart[$product->id]) ? $sessionCart[$product->id]['quantity'] : 0;
+        }
         
-        return view('products.show', compact('product', 'recommendations'));
+        // Calculate available quantity (stock - already in cart)
+        $availableQty = max(0, $product->quantity - $qtyInCart);
+        
+        return view('products.show', compact('product', 'recommendations', 'qtyInCart', 'availableQty'));
     }
 }

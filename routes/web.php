@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController as ControllersOrderController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\TypesenseSetupController;
 use App\Http\Controllers\UserCategoryController;
 use App\Http\Controllers\UserOrderController;
@@ -24,6 +25,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::get('/cart/add/{product}', [CartController::class, 'addToCart'])->name('cart.add');
 Route::resource('/cart', CartController::class);
 Route::get('/register', RegisterController::class)->name('register.show');

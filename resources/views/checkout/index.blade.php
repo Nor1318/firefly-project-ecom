@@ -1,216 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('components.layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout | Kina</title>
+@section('content')
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: '#266e1cff',
-                        secondary: '#0a2005ff',
-                        surface: '#f8f9fa',
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        /* Custom Radio Button Styling */
-        input[type="radio"]:checked+div {
-            border-color: #266e1cff;
-            background-color: #f0fdf4;
-            box-shadow: 0 4px 6px -1px rgba(38, 110, 28, 0.1);
-        }
-
-        input[type="radio"]:checked+div .check-icon {
-            opacity: 1;
-            transform: scale(1);
-        }
-    </style>
-</head>
-
-<body class="bg-gray-50 font-sans antialiased text-gray-800">
-
-    <!-- HEADER -->
-    <nav class="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <a href="{{ route('home') }}" class="text-2xl font-bold text-primary flex items-center gap-2 tracking-tight">
-                        <i class="ph-fill ph-shopping-bag"></i>
-                        Kina
-                    </a>
-                </div>
-
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="{{route('home')}}" class="text-sm font-medium text-gray-500 hover:text-primary transition">Home</a>
-                    <a href="{{route('products.index')}}" class="text-sm font-medium text-gray-500 hover:text-primary transition">Shop</a>
-                </div>
-
-                <div class="flex items-center gap-4">
-                    <a href="{{route('cart.index')}}" class="relative group p-2 rounded-full hover:bg-gray-50 transition text-gray-600 hover:text-primary">
-                        <i class="ph-bold ph-shopping-cart text-xl"></i>
-                        <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white border-2 border-white">
-                            {{ Auth::check() ? (Auth::user()->cart?->cartItems()->count() ?? 0) : 0 }}
-                        </span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- MAIN CONTENT -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="flex items-center gap-3 mb-8">
-            <a href="{{route('cart.index')}}" class="p-2 rounded-full bg-white border border-gray-200 text-gray-500 hover:text-primary hover:border-primary transition">
+<section class="bg-secondary/30 border-b border-purple-100 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-4">
+            <a href="{{route('cart.index')}}" class="p-2 rounded-full bg-white border border-gray-200 text-gray-600 hover:text-primary hover:border-primary transition">
                 <i class="ph-bold ph-arrow-left"></i>
             </a>
-            <h1 class="text-3xl font-bold text-gray-900">Checkout</h1>
-        </div>
-
-        <!-- Coupon Code Section (Outside main form) -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 mb-8">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-primary">
-                    <i class="ph-fill ph-ticket text-xl"></i>
-                </div>
-                <h2 class="text-xl font-bold text-gray-900">Coupon Code</h2>
-            </div>
-
-            <!-- Success Messages -->
-            @if(session('success'))
-            <div class="mb-4 bg-green-50 border border-green-200 rounded-xl p-4 animate-fade-in">
-                <div class="flex items-center gap-2">
-                    <i class="ph-fill ph-check-circle text-green-500 text-lg"></i>
-                    <p class="text-green-800 text-sm font-medium">{{ session('success') }}</p>
-                </div>
-            </div>
-            @endif
-
-            <!-- Error Messages -->
-            @if(session('error'))
-            <div class="mb-4 bg-red-50 border border-red-200 rounded-xl p-4 animate-fade-in">
-                <div class="flex items-center gap-2">
-                    <i class="ph-fill ph-warning-circle text-red-500 text-lg"></i>
-                    <p class="text-red-800 text-sm font-medium">{{ session('error') }}</p>
-                </div>
-            </div>
-            @endif
-
-            <!-- Applied Coupon Display -->
-            @if(session('applied_coupon'))
-            <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-4 animate-fade-in">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        <i class="ph-fill ph-check-circle text-green-500 text-lg"></i>
-                        <div>
-                            <span class="font-bold text-green-800">Coupon Applied!</span>
-                            <span class="text-green-600 ml-2">{{ session('applied_coupon.code') }}</span>
-                            <p class="text-green-600 text-sm mt-1">Discount: Rs {{ number_format(session('applied_coupon.discount'), 2) }}</p>
-                        </div>
-                    </div>
-                    <form action="{{ route('checkout.remove-coupon') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-medium flex items-center gap-1">
-                            <i class="ph-fill ph-x"></i>
-                            Remove
-                        </button>
-                    </form>
-                </div>
-            </div>
-            @endif
-
-            <!-- Coupon Form -->
-            @if(!session('applied_coupon'))
-            <form action="{{ route('checkout.apply-coupon') }}" method="POST" class="flex gap-3">
-                @csrf
-                <div class="flex-grow">
-                    <input type="text" 
-                           name="coupon_code" 
-                           value="{{ old('coupon_code') }}"
-                           class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all @error('coupon_code') border-red-300 bg-red-50 @enderror" 
-                           placeholder="Enter coupon code" 
-                           required>
-                    @error('coupon_code')
-                        <p class="text-red-600 text-xs mt-2 flex items-center gap-1">
-                            <i class="ph-fill ph-warning"></i>
-                            {{ $message }}
-                        </p>
-                    @enderror
-                </div>
-                <button type="submit" class="px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-[#1e5616] transition-all whitespace-nowrap flex items-center gap-2">
-                    <i class="ph-fill ph-ticket"></i>
-                    Apply
-                </button>
-            </form>
-            @endif
-
-            <!-- Sample Coupon Hints -->
-            <div class="mt-4">
-                <p class="text-xs text-gray-500 mb-2">Try these test coupons:</p>
-                <div class="flex flex-wrap gap-2">
-                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">WELCOME10 (10% off)</span>
-                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">SAVE5 (Rs 5 off)</span>
-                </div>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Checkout</h1>
+                <p class="text-gray-600 mt-1">Complete your purchase</p>
             </div>
         </div>
+    </div>
+</section>
 
-        <form action="" method="POST">
+<main class="py-12 bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <form action="{{route('checkout.store')}}" method="POST">
             @csrf
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                <!-- LEFT COLUMN: Forms -->
-                <div class="lg:col-span-8 space-y-8">
+                <!-- Left Column: Forms -->
+                <div class="lg:col-span-2 space-y-6">
 
-                    <!-- 1. ADDRESS SELECTION -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+                    <!-- Shipping Address -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <div class="flex items-center gap-3 mb-6">
-                            <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-primary">
+                            <div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-primary">
                                 <i class="ph-fill ph-map-pin text-xl"></i>
                             </div>
-                            <h2 class="text-xl font-bold text-gray-900">Shipping Address</h2>
+                            <h2 class="text-lg font-bold text-gray-900">Shipping Address</h2>
                         </div>
 
-                        <!-- Saved Addresses (Radio Buttons) -->
                         @if(isset($addresses) && count($addresses) > 0)
-                        <div class="mb-8">
-                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-4">Select from saved addresses</label>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-3">Saved Addresses</label>
+                            <div class="grid grid-cols-1 gap-3">
                                 @foreach($addresses as $address)
-                                <label class="relative cursor-pointer group">
+                                <label class="relative cursor-pointer">
                                     <input type="radio" name="selected_address_id" value="{{$address->id}}"
                                         onclick="window.location.href='?address_id={{$address->id}}'"
                                         class="peer sr-only"
                                         @if(request('address_id')==$address->id) checked @endif>
-
-                                    <div class="p-4 rounded-xl border-2 border-gray-200 hover:border-gray-300 transition-all duration-200 h-full">
+                                    <div class="p-4 rounded-xl border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-purple-50 hover:border-gray-300 transition">
                                         <div class="flex justify-between items-start">
                                             <div>
-                                                <span class="block font-bold text-gray-900 mb-1">{{$address->street_address_1}}</span>
-                                                <span class="block text-sm text-gray-500">{{$address->city}}, {{$address->state}}</span>
-                                                <span class="block text-sm text-gray-500">{{$address->country}}</span>
+                                                <span class="block font-bold text-gray-900">{{$address->street_address_1}}</span>
+                                                <span class="block text-sm text-gray-500">{{$address->city}}, {{$address->state}}, {{$address->country}}</span>
                                             </div>
-                                            <div class="check-icon w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center opacity-0 transform scale-50 transition-all duration-200">
-                                                <i class="ph-bold ph-check text-xs"></i>
-                                            </div>
+                                            <i class="ph-fill ph-check-circle text-primary text-xl opacity-0 peer-checked:opacity-100"></i>
                                         </div>
                                     </div>
                                 </label>
@@ -218,64 +59,67 @@
                             </div>
                         </div>
 
-                        <div class="relative flex py-2 items-center mb-8">
+                        <div class="relative flex py-3 items-center mb-6">
                             <div class="flex-grow border-t border-gray-200"></div>
-                            <span class="flex-shrink-0 mx-4 text-gray-400 text-sm">Or enter new details</span>
+                            <span class="flex-shrink mx-4 text-gray-400 text-sm">Or enter new address</span>
                             <div class="flex-grow border-t border-gray-200"></div>
                         </div>
                         @endif
 
-                        <!-- Manual Address Form -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                                <input type="text" name="name" id="name" value="{{auth()->user()->name}}"
-                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium" placeholder="John Doe" required>
+                                <input type="text" name="name" value="{{auth()->user()->name}}"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition"
+                                    required>
                             </div>
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Street Address 1</label>
-                                <input type="text" name="street_address_1" id="street_address_1" value="{{$selectedAddress->street_address_1 ?? ''}}"
-                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="123 Main Street" required>
+                                <input type="text" name="street_address_1" value="{{$selectedAddress->street_address_1 ?? ''}}"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition"
+                                    required>
                             </div>
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Street Address 2 (Optional)</label>
-                                <input type="text" name="street_address_2" id="street_address_2" value="{{$selectedAddress->street_address_2 ?? ''}}"
-                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="Apartment, suite, etc.">
+                                <input type="text" name="street_address_2" value="{{$selectedAddress->street_address_2 ?? ''}}"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">City</label>
-                                <input type="text" name="city" id="city" value="{{$selectedAddress->city ?? ''}}"
-                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="Pokhara" required>
+                                <input type="text" name="city" value="{{$selectedAddress->city ?? ''}}"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition"
+                                    required>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">State</label>
-                                <input type="text" name="state" id="state" value="{{$selectedAddress->state ?? ''}}"
-                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="Bagmati" required>
+                                <input type="text" name="state" value="{{$selectedAddress->state ?? ''}}"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition"
+                                    required>
                             </div>
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Country</label>
-                                <input type="text" name="country" id="country" value="{{$selectedAddress->country ?? ''}}"
-                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="Nepal" required>
+                                <input type="text" name="country" value="{{$selectedAddress->country ?? ''}}"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition"
+                                    required>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 2. PAYMENT METHOD -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+                    <!-- Payment Method -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <div class="flex items-center gap-3 mb-6">
-                            <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-primary">
+                            <div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-primary">
                                 <i class="ph-fill ph-credit-card text-xl"></i>
                             </div>
-                            <h2 class="text-xl font-bold text-gray-900">Payment Method</h2>
+                            <h2 class="text-lg font-bold text-gray-900">Payment Method</h2>
                         </div>
 
-                        <div class="space-y-4">
-                            <!-- eSewa Option -->
-                            <label class="relative cursor-pointer group block">
+                        <div class="space-y-3">
+                            <label class="relative cursor-pointer block">
                                 <input type="radio" name="payment_method" value="esewa" class="peer sr-only" checked>
-                                <div class="p-4 rounded-xl border-2 border-gray-200 hover:border-gray-300 flex items-center justify-between transition-all">
+                                <div class="p-4 rounded-xl border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-purple-50 flex items-center justify-between transition">
                                     <div class="flex items-center gap-4">
-                                        <div class="w-12 h-12 bg-[#60bb46] rounded-lg flex items-center justify-center text-white font-bold shadow-sm">
+                                        <div class="w-12 h-12 bg-[#60bb46] rounded-lg flex items-center justify-center text-white font-bold text-xs">
                                             eSewa
                                         </div>
                                         <div>
@@ -283,18 +127,15 @@
                                             <span class="block text-xs text-gray-500">Digital Wallet</span>
                                         </div>
                                     </div>
-                                    <div class="check-icon w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center opacity-0 transform scale-50 transition-all">
-                                        <i class="ph-bold ph-check text-xs"></i>
-                                    </div>
+                                    <i class="ph-fill ph-check-circle text-primary text-xl opacity-0 peer-checked:opacity-100"></i>
                                 </div>
                             </label>
 
-                            <!-- COD Option -->
-                            <label class="relative cursor-pointer group block">
+                            <label class="relative cursor-pointer block">
                                 <input type="radio" name="payment_method" value="cod" class="peer sr-only">
-                                <div class="p-4 rounded-xl border-2 border-gray-200 hover:border-gray-300 flex items-center justify-between transition-all">
+                                <div class="p-4 rounded-xl border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-purple-50 flex items-center justify-between transition">
                                     <div class="flex items-center gap-4">
-                                        <div class="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center text-white font-bold shadow-sm">
+                                        <div class="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center text-white">
                                             <i class="ph-fill ph-money text-2xl"></i>
                                         </div>
                                         <div>
@@ -302,86 +143,124 @@
                                             <span class="block text-xs text-gray-500">Pay when you receive</span>
                                         </div>
                                     </div>
-                                    <div class="check-icon w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center opacity-0 transform scale-50 transition-all">
-                                        <i class="ph-bold ph-check text-xs"></i>
-                                    </div>
+                                    <i class="ph-fill ph-check-circle text-primary text-xl opacity-0 peer-checked:opacity-100"></i>
                                 </div>
                             </label>
                         </div>
                     </div>
                 </div>
-               
 
+                <!-- Right Column: Order Summary -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-24 space-y-6">
+                        
+                        <!-- Coupon Section -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-4">
+                                <i class="ph-fill ph-ticket text-primary text-lg"></i>
+                                <h3 class="font-bold text-gray-900">Coupon Code</h3>
+                            </div>
 
-               
-               <!-- RIGHT COLUMN: Order Summary -->
-<div class="lg:col-span-4">
-    <div class="bg-white rounded-2xl shadow-lg shadow-gray-200/50 border border-gray-100 p-6 sticky top-24">
-        <h2 class="text-lg font-bold text-gray-900 mb-6 flex items-center justify-between">
-            Order Summary
-            <span class="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-md">{{ count($cartItems) }} items</span>
-        </h2>
+                            @if(session('success'))
+                            <div class="mb-3 bg-green-50 border border-green-200 rounded-lg p-2 flex items-center gap-2">
+                                <i class="ph-fill ph-check-circle text-green-500 text-sm"></i>
+                                <p class="text-green-800 text-xs font-medium">{{ session('success') }}</p>
+                            </div>
+                            @endif
 
-        <div class="space-y-4 mb-6 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
-            @foreach($cartItems as $item)
-            <div class="flex gap-4 items-start">
-                <div class="w-14 h-14 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden border border-gray-200">
-                    <img src="/storage/{{$item->product->image}}" alt="{{$item->product->name}}" class="w-full h-full object-cover">
+                            @if(session('error'))
+                            <div class="mb-3 bg-red-50 border border-red-200 rounded-lg p-2 flex items-center gap-2">
+                                <i class="ph-fill ph-warning-circle text-red-500 text-sm"></i>
+                                <p class="text-red-800 text-xs font-medium">{{ session('error') }}</p>
+                            </div>
+                            @endif
+
+                            @if(session('applied_coupon'))
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-3 flex justify-between items-center">
+                                <div class="flex items-center gap-2">
+                                    <i class="ph-fill ph-check-circle text-green-500"></i>
+                                    <div>
+                                        <span class="font-bold text-green-800 text-sm">{{ session('applied_coupon.code') }}</span>
+                                        <p class="text-green-600 text-xs">-Rs {{ number_format(session('applied_coupon.discount'), 2) }}</p>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="event.preventDefault(); var form = document.createElement('form'); form.method = 'POST'; form.action = '{{ route('checkout.remove-coupon') }}'; var csrf = document.createElement('input'); csrf.type = 'hidden'; csrf.name = '_token'; csrf.value = '{{ csrf_token() }}'; form.appendChild(csrf); document.body.appendChild(form); form.submit();" class="text-red-600 hover:text-red-800 p-1">
+                                    <i class="ph-bold ph-x text-lg"></i>
+                                </button>
+                            </div>
+                            @else
+                            <div class="flex gap-2">
+                                <input type="text" name="coupon_code" value="{{ old('coupon_code') }}"
+                                    class="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition"
+                                    placeholder="Enter code">
+                                <button type="button" onclick="event.preventDefault(); var form = document.createElement('form'); form.method = 'POST'; form.action = '{{ route('checkout.apply-coupon') }}'; var csrf = document.createElement('input'); csrf.type = 'hidden'; csrf.name = '_token'; csrf.value = '{{ csrf_token() }}'; form.appendChild(csrf); var input = document.createElement('input'); input.type = 'hidden'; input.name = 'coupon_code'; input.value = this.previousElementSibling.value; form.appendChild(input); document.body.appendChild(form); form.submit();"
+                                    class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition whitespace-nowrap">
+                                    Apply
+                                </button>
+                            </div>
+                            @endif
+                        </div>
+
+                        <div class="border-t border-gray-100 pt-6">
+                            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center justify-between">
+                                Order Summary
+                                <span class="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-md">{{ count($cartItems) }} items</span>
+                            </h2>
+
+                            <div class="space-y-3 mb-4 max-h-48 overflow-y-auto">
+                                @foreach($cartItems as $item)
+                                <div class="flex gap-3 items-start">
+                                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden border border-gray-200">
+                                        <img src="/storage/{{$item->product->image}}" alt="{{$item->product->name}}" class="w-full h-full object-cover">
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs font-bold text-gray-900 truncate">{{$item->product->name}}</p>
+                                        <p class="text-xs text-gray-500">Qty: {{$item->quantity}}</p>
+                                    </div>
+                                    <p class="text-sm font-bold text-gray-900">Rs {{$item->product->price * $item->quantity}}</p>
+                                </div>
+                                @endforeach
+                            </div>
+
+                            <div class="border-t border-gray-100 pt-4 space-y-2 mb-4">
+                                <div class="flex justify-between text-gray-600 text-sm">
+                                    <span>Subtotal</span>
+                                    <span class="font-medium">Rs {{$subtotal}}</span>
+                                </div>
+
+                                @if(session('applied_coupon'))
+                                <div class="flex justify-between text-green-600 text-sm">
+                                    <span>Discount</span>
+                                    <span class="font-medium">- Rs {{ number_format(session('applied_coupon.discount'), 2) }}</span>
+                                </div>
+                                @endif
+
+                                <div class="flex justify-between text-gray-600 text-sm">
+                                    <span>Shipping</span>
+                                    <span class="font-medium">Rs {{$shipping}}</span>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between items-center mb-6 pb-6 border-b border-gray-100">
+                                <span class="font-bold text-gray-900">Total</span>
+                                <span class="text-2xl font-bold text-primary">Rs {{ number_format($total, 2) }}</span>
+                            </div>
+
+                            <button type="submit" class="w-full py-4 bg-primary text-white rounded-xl font-bold shadow-lg hover:bg-purple-700 transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                                <span>Place Order</span>
+                                <i class="ph-bold ph-arrow-right"></i>
+                            </button>
+
+                            <p class="text-xs text-gray-500 text-center mt-4">
+                                <i class="ph-fill ph-shield-check text-primary"></i>
+                                Secure checkout
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex-grow">
-                    <p class="text-sm font-bold text-gray-900 line-clamp-1">{{$item->product->name}}</p>
-                    <p class="text-xs text-gray-500 mt-0.5">Qty: {{$item->quantity}}</p>
-                </div>
-                <p class="text-sm font-bold text-gray-900">Rs {{$item->product->price * $item->quantity}}</p>
-            </div>
-            @endforeach
-        </div>
-
-        <div class="border-t border-dashed border-gray-200 pt-4 space-y-3">
-            <div class="flex justify-between text-gray-600 text-sm">
-                <span>Subtotal</span>
-                <span class="font-medium">Rs {{$subtotal}}</span>
-            </div>
-            
-            @if(session('applied_coupon'))
-            <div class="flex justify-between text-green-600 text-sm">
-                <span>Discount</span>
-                <span class="font-medium">- Rs {{ number_format(session('applied_coupon.discount'), 2) }}</span>
-            </div>
-            @endif
-            
-            <div class="flex justify-between text-gray-600 text-sm">
-                <span>Shipping</span>
-                <span class="font-medium">Rs {{$shipping}}</span>
-            </div>
-            
-            <div class="border-t border-gray-100 pt-3 flex justify-between items-end">
-                <span class="font-bold text-gray-900">Total</span>
-                <span class="text-2xl font-bold text-primary">
-                    Rs {{ number_format($total, 2) }}
-                </span>
-            </div>
-        </div>
-
-        <div class="mt-8 space-y-3">
-            <button type="submit" class="w-full py-4 bg-primary text-white rounded-xl font-bold text-sm shadow-lg shadow-green-900/20 hover:bg-[#1e5616] transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
-                <span>Place Order</span>
-                <i class="ph-bold ph-arrow-right"></i>
-            </button>
-        </div>
-    </div>
-</div>
             </div>
         </form>
-    </main>
+    </div>
+</main>
 
-    <!-- FOOTER (Minimal) -->
-    <footer class="bg-white border-t border-gray-100 mt-12 py-8">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-gray-400 text-sm">&copy; 2025 Kina Store. All rights reserved.</p>
-        </div>
-    </footer>
-
-</body>
-
-</html>
+@endsection

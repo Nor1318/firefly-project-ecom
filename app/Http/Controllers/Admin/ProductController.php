@@ -53,7 +53,7 @@ class ProductController extends Controller
         }
         $product->category_id = $request->category_id;
         $product->save();
-        return redirect()->route('products.index');
+        return redirect()->route('products.index')->with('success', 'Product created successfully');
     }
 
     /**
@@ -99,8 +99,8 @@ class ProductController extends Controller
             $product->image = $request->file('image')->store('image', 'public');
         }
         $product->category_id = $request->category_id;
-        $product->update();
-        return redirect()->route('products.index');
+        $product->save();
+        return redirect()->route('products.index')->with('success', 'Product updated successfully');
     }
 
     /**

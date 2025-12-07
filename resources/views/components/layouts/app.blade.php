@@ -94,9 +94,17 @@
                     <!-- Cart -->
                     <a href="{{route('cart.index')}}" class="relative p-2 text-gray-600 hover:text-primary transition rounded-full hover:bg-gray-50 group">
                         <i class="ph-bold ph-shopping-bag text-xl group-hover:scale-110 transition-transform"></i>
-                        @if(Auth::check() && Auth::user()->cart?->cartItems()->count() > 0)
+                        @php
+                            $cartCount = 0;
+                            if(Auth::check()) {
+                                $cartCount = Auth::user()->cart?->cartItems()->count() ?? 0;
+                            } else {
+                                $cartCount = count(session()->get('cart', []));
+                            }
+                        @endphp
+                        @if($cartCount > 0)
                         <span class="absolute top-0 right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-accent rounded-full border-2 border-white">
-                            {{Auth::user()->cart->cartItems()->count()}}
+                            {{$cartCount}}
                         </span>
                         @endif
                     </a>
@@ -195,24 +203,37 @@
                     </div>
                 </div>
 
-                <!-- Links -->
+                <!-- Shop Links -->
                 <div>
                     <h4 class="font-bold text-gray-900 mb-6">Shop</h4>
                     <ul class="space-y-3 text-sm text-gray-500">
-                        <li><a href="#" class="hover:text-primary transition">New Arrivals</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Best Sellers</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Sale</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Collections</a></li>
+                        <li><a href="{{route('user.products')}}" class="hover:text-primary transition">All Products</a></li>
+                        <li><a href="{{route('user.products')}}?sort_by=newest" class="hover:text-primary transition">New Arrivals</a></li>
+                        <li><a href="{{route('home')}}#categories" class="hover:text-primary transition">Categories</a></li>
                     </ul>
                 </div>
 
+                <!-- Company Links -->
                 <div>
-                    <h4 class="font-bold text-gray-900 mb-6">Support</h4>
+                    <h4 class="font-bold text-gray-900 mb-6">Company</h4>
                     <ul class="space-y-3 text-sm text-gray-500">
-                        <li><a href="#" class="hover:text-primary transition">Help Center</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Shipping & Returns</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Size Guide</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Contact Us</a></li>
+                        <li><a href="{{route('about')}}" class="hover:text-primary transition">About Us</a></li>
+                        <li><a href="{{route('contact')}}" class="hover:text-primary transition">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Account Links -->
+                <div>
+                    <h4 class="font-bold text-gray-900 mb-6">Account</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        @if(Auth::check())
+                            <li><a href="{{route('profile')}}" class="hover:text-primary transition">My Profile</a></li>
+                            <li><a href="{{route('order.index')}}" class="hover:text-primary transition">My Orders</a></li>
+                            <li><a href="{{route('cart.index')}}" class="hover:text-primary transition">Shopping Cart</a></li>
+                        @else
+                            <li><a href="{{route('login.show')}}" class="hover:text-primary transition">Login</a></li>
+                            <li><a href="{{route('register.show')}}" class="hover:text-primary transition">Register</a></li>
+                        @endif
                     </ul>
                 </div>
             </div>

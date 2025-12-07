@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\CartController;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,7 @@ class LoginController extends Controller
     {
         return view('login');
     }
+    
     public function login(Request $request)
     {
         $credentials = $request->validate(
@@ -24,6 +26,9 @@ class LoginController extends Controller
 
 
         if (Auth::attempt($credentials)) {
+            // Merge session cart into user's cart
+            CartController::mergeSessionCart(Auth::user());
+            
             if (Auth::user()->role == 'admin') {
                 return redirect()->route('admin');
             } elseif (Auth::user()->role == 'user') {
