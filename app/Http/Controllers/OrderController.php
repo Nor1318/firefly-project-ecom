@@ -43,7 +43,11 @@ class OrderController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $order = Order::with(['orderItems.product', 'payment'])
+            ->where('user_id', Auth::id())
+            ->findOrFail($id);
+
+        return view('order-detail', compact('order'));
     }
 
     /**
