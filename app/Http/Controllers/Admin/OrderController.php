@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\InvoiceMail;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -99,5 +102,47 @@ class OrderController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Download invoice as PDF
+     */
+    public function downloadInvoice(Order $order)
+    {
+        $order->load(['user', 'address', 'orderItems.product', 'payment']);
+        
+        $pdf = Pdf::loadView('invoices.invoice', compact('order'));
+        
+        return $pdf->download('Invoice-' . $order->id . '.pdf');
+    }
+
+    /**
+     * Send invoice via email
+     */
+    public function emailInvoice(Order $order)
+    {
+        $order->load(['user', 'address', 'orderItems.product', 'payment']);
+        
+        // Generate PDF
+        $pdf = Pdf::loadView('invoices.invoice', compact('order'));
+        $pdfPath = storage_path('app/invoices/invoice-' . $order->id . '.pdf');
+        
+        // Create directory if it doesn't exist
+        if (!file_exists(storage_path('app/invoices'))) {
+            mkdir(storage_path('app/invoices'), 0755, true);
+        }
+        
+        // Save PDF temporarily
+        $pdf->save($pdfPath);
+        
+        // Send email
+        Mail::to($order->user->email)->send(new InvoiceMail($order, $pdfPath));
+        
+        // Delete temporary PDF
+        if (file_exists($pdfPath)) {
+            unlink($pdfPath);
+        }
+        
+        return redirect()->back()->with('success', 'Invoice sent to ' . $order->user->email);
     }
 }

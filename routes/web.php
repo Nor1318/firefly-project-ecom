@@ -53,6 +53,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('/admin/products', ProductController::class);
     Route::resource('/admin/coupons', CouponController::class);
     Route::resource('/admin/orders', OrderController::class);
+    Route::get('/admin/orders/{order}/invoice/download', [OrderController::class, 'downloadInvoice'])->name('orders.invoice.download');
+    Route::post('/admin/orders/{order}/invoice/email', [OrderController::class, 'emailInvoice'])->name('orders.invoice.email');
     Route::resource('/admin/payments', PaymentController::class);
     Route::put('/admin/payments/{payment}/gen', [PaymentController::class, 'randomGen'])->name('payments.randomGen');
     Route::resource('/admin/users/{user}/addresses', AddressController::class);
