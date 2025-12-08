@@ -7,11 +7,13 @@ use App\Mail\InvoiceMail;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of the resource.
      */
@@ -109,6 +111,9 @@ class OrderController extends Controller
      */
     public function downloadInvoice(Order $order)
     {
+        // Authorize - admins can download any invoice
+        $this->authorize('downloadInvoice', $order);
+        
         $order->load(['user', 'address', 'orderItems.product', 'payment']);
         
         $pdf = Pdf::loadView('invoices.invoice', compact('order'));
@@ -121,6 +126,9 @@ class OrderController extends Controller
      */
     public function emailInvoice(Order $order)
     {
+        // Authorize - only admins can send invoices
+        $this->authorize('emailInvoice', $order);
+        
         $order->load(['user', 'address', 'orderItems.product', 'payment']);
         
         // Generate PDF
