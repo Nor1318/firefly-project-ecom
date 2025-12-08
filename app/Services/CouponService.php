@@ -17,10 +17,34 @@ class CouponService
             ];
         }
 
-        if (!$coupon->isValid()) {
+        // Check if coupon is active
+        if (!$coupon->is_active) {
             return [
                 'valid' => false,
-                'message' => 'This coupon is no longer valid'
+                'message' => 'This coupon is currently inactive'
+            ];
+        }
+
+        // Check usage limit
+        if ($coupon->usage_limit && $coupon->used_count >= $coupon->usage_limit) {
+            return [
+                'valid' => false,
+                'message' => 'This coupon has reached its usage limit'
+            ];
+        }
+
+        // Check date validity
+        $now = now();
+        if ($coupon->valid_from && $now->lt($coupon->valid_from)) {
+            return [
+                'valid' => false,
+                'message' => 'This coupon is not yet valid'
+            ];
+        }
+        if ($coupon->valid_until && $now->gt($coupon->valid_until)) {
+            return [
+                'valid' => false,
+                'message' => 'This coupon has expired'
             ];
         }
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AddressController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OrderItemController;
 use App\Http\Controllers\Admin\PaymentController;
@@ -50,6 +51,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('/admin/users', UserController::class);
     Route::resource('/admin/categories', CategoryController::class);
     Route::resource('/admin/products', ProductController::class);
+    Route::resource('/admin/coupons', CouponController::class);
     Route::resource('/admin/orders', OrderController::class);
     Route::resource('/admin/payments', PaymentController::class);
     Route::put('/admin/payments/{payment}/gen', [PaymentController::class, 'randomGen'])->name('payments.randomGen');
