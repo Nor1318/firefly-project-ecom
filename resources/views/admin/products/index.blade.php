@@ -8,19 +8,70 @@
 
 <div class="bg-white rounded-lg shadow-sm border border-gray-200">
     {{-- Header --}}
-    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
-        <div>
-            <h2 class="text-lg font-semibold text-gray-900">Products list</h2>
-            <p class="text-sm text-gray-500 mt-1">Manage your baby products inventory</p>
+    <div class="p-6 border-b border-gray-200">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900">Products list</h2>
+                <p class="text-sm text-gray-500 mt-1">Manage your baby products inventory</p>
+            </div>
+            <div class="flex gap-3">
+                <a href="{{route('products.create')}}" class="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Add Product
+                </a>
+            </div>
         </div>
-        <div class="flex gap-3">
-            <a href="{{route('products.create')}}" class="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors">
-                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                Add Product
-            </a>
-        </div>
+
+        {{-- Search & Filters --}}
+        <form action="{{route('products.index')}}" method="GET" class="mt-6 flex flex-col md:flex-row gap-4">
+            <div class="flex-1">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <input type="text" name="q" value="{{request('q')}}" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm" placeholder="Search products...">
+                </div>
+            </div>
+            <div class="w-full md:w-48">
+                <select name="category_id" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-lg">
+                    <option value="">All Categories</option>
+                    @foreach($categories as $category)
+                    <option value="{{$category->id}}" {{request('category_id') == $category->id ? 'selected' : ''}}>{{$category->name}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="w-full md:w-48">
+                <select name="stock_status" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-lg">
+                    <option value="">All Stock Status</option>
+                    <option value="in_stock" {{request('stock_status') == 'in_stock' ? 'selected' : ''}}>In Stock</option>
+                    <option value="low_stock" {{request('stock_status') == 'low_stock' ? 'selected' : ''}}>Low Stock (< 10)</option>
+                    <option value="out_of_stock" {{request('stock_status') == 'out_of_stock' ? 'selected' : ''}}>Out of Stock</option>
+                </select>
+            </div>
+            <div class="w-full md:w-48">
+                <select name="sort_by" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-lg">
+                    <option value="">Sort By</option>
+                    <option value="price_asc" {{request('sort_by') == 'price_asc' ? 'selected' : ''}}>Price: Low to High</option>
+                    <option value="price_desc" {{request('sort_by') == 'price_desc' ? 'selected' : ''}}>Price: High to Low</option>
+                    <option value="name" {{request('sort_by') == 'name' ? 'selected' : ''}}>Name: A-Z</option>
+                    <option value="newest" {{request('sort_by') == 'newest' ? 'selected' : ''}}>Newest First</option>
+                </select>
+            </div>
+            <div class="flex gap-2">
+                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors">
+                    Search
+                </button>
+                @if(request()->hasAny(['q', 'category_id', 'stock_status', 'sort_by']))
+                <a href="{{route('products.index')}}" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                    Clear
+                </a>
+                @endif
+            </div>
+        </form>
     </div>
 
     {{-- Table --}}

@@ -4,115 +4,133 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\TypesenseService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 
 class UserProductController extends Controller
 {
+    protected $typesense;
+
+    public function __construct(TypesenseService $typesense)
+    {
+        $this->typesense = $typesense;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
         $categories = Category::all();
-        
-        // Check if there's an actual search query
-        $hasSearch = $request->filled('q') && $request->input('q') !== '*';
-        
-        if ($hasSearch) {
-            // Use Scout search when there's a query
-            $search = Product::search($request->input('q'));
+        $query = $request->input('q', '');
+
+        // If there's a search query, use Typesense
+        if ($query) {
+            $filters = [
+                'page' => $request->input('page', 1),
+                'per_page' => 12,
+                'category_id' => $request->input('category'),
+                'min_price' => $request->input('min_price'),
+                'max_price' => $request->input('max_price'),
+                'sort_by' => $this->getSortBy($request->input('sort_by')),
+            ];
+
+            $results = $this->typesense->search($query, $filters);
+
+            // Transform Typesense results to Product models
+            $productIds = collect($results['hits'] ?? [])->pluck('document.id')->toArray();
+            
+            if (!empty($productIds)) {
+                $products = Product::with('category')
+                    ->whereIn('id', $productIds)
+                    ->get()
+                    ->sortBy(function ($product) use ($productIds) {
+                        return array_search($product->id, $productIds);
+                    })
+                    ->values();
+                
+                // Manual pagination
+                $currentPage = $filters['page'];
+                $perPage = $filters['per_page'];
+                $total = $results['found'] ?? 0;
+                
+                $products = new \Illuminate\Pagination\LengthAwarePaginator(
+                    $products,
+                    $total,
+                    $perPage,
+                    $currentPage,
+                    ['path' => $request->url(), 'query' => $request->query()]
+                );
+            } else {
+                $products = new \Illuminate\Pagination\LengthAwarePaginator(
+                    collect([]),
+                    0,
+                    12,
+                    1,
+                    ['path' => $request->url(), 'query' => $request->query()]
+                );
+            }
         } else {
-            // Use regular query builder when no search
-            $query = Product::query();
-            
-            // Apply category filter
-            if ($request->filled('category')) {
-                $query->where('category_id', (int) $request->category);
+            // Regular query without search - FIXED HERE
+            $products = Product::with('category');
+
+            if ($request->category) {
+                $products = $products->where('category_id', $request->category);
             }
-            
-            // Apply price range filters
-            if ($request->filled('min_price')) {
-                $query->where('price', '>=', $request->min_price * 100);
+
+            if ($request->min_price) {
+                $products = $products->where('price', '>=', $request->min_price);
             }
-            if ($request->filled('max_price')) {
-                $query->where('price', '<=', $request->max_price * 100);
+
+            if ($request->max_price) {
+                $products = $products->where('price', '<=', $request->max_price);
             }
-            
-            // Apply sorting
+
             $sortBy = $request->sort_by;
-            switch ($sortBy) {
-                case 'price_asc':
-                    $query->orderBy('price', 'asc');
-                    break;
-                case 'price_desc':
-                    $query->orderBy('price', 'desc');
-                    break;
-                case 'name_asc':
-                    $query->orderBy('name', 'asc');
-                    break;
-                case 'newest':
-                default:
-                    $query->orderBy('created_at', 'desc');
-                    break;
+            if ($sortBy) {
+                switch ($sortBy) {
+                    case 'price_asc':
+                        $products = $products->orderBy('price', 'asc');
+                        break;
+                    case 'price_desc':
+                        $products = $products->orderBy('price', 'desc');
+                        break;
+                    case 'name_asc':
+                        $products = $products->orderBy('name', 'asc');
+                        break;
+                    case 'newest':
+                        $products = $products->latest();
+                        break;
+                    default:
+                        $products = $products->latest();
+                }
+            } else {
+                $products = $products->latest();
             }
-            
-            // Paginate results
-            $products = $query->paginate(12)->appends($request->query());
-            
-            return view('products.index', compact('products', 'categories'));
-        }
-        
-        // Scout search path (when there's a search query)
 
-        // Apply category filter
-        if ($request->filled('category')) {
-            $search->where('category_id', (int) $request->category);
+            $products = $products->paginate(12)->appends($request->query());
         }
 
-        // Apply price range filters (using where for exact matches or custom query for ranges if supported by driver)
-        // Note: Standard Scout 'where' is equality only. For ranges with Typesense, we use 'options' to pass raw filter_by.
-        // However, let's try to keep it simple first. If using Typesense driver, we can pass filter_by in options.
-        
-        $filterBy = [];
-        if ($request->filled('min_price')) {
-            $filterBy[] = 'price:>=' . $request->min_price;
-        }
-        if ($request->filled('max_price')) {
-            $filterBy[] = 'price:<=' . $request->max_price;
-        }
-        
-        if (!empty($filterBy)) {
-            $search->options([
-                'filter_by' => implode(' && ', $filterBy)
-            ]);
-        }
+        return view('products.index', compact('products', 'categories', 'query'));
+    }
 
-        // Apply sorting
-        // Scout's orderBy works if the driver supports it.
-        $sortBy = $request->sort_by;
+    /**
+     * Convert sort option to Typesense format
+     */
+    private function getSortBy($sortBy)
+    {
         switch ($sortBy) {
             case 'price_asc':
-                $search->orderBy('price', 'asc');
-                break;
+                return 'price:asc';
             case 'price_desc':
-                $search->orderBy('price', 'desc');
-                break;
+                return 'price:desc';
             case 'name_asc':
-                $search->orderBy('name', 'asc');
-                break;
+                return 'name:asc';
             case 'newest':
+                return 'created_at:desc';
             default:
-                $search->orderBy('created_at', 'desc');
-                break;
+                return 'created_at:desc';
         }
-
-        // Paginate results
-        $products = $search->paginate(12)->appends($request->query());
-        
-        return view('products.index', compact('products', 'categories'));
     }
 
     /**
@@ -121,27 +139,6 @@ class UserProductController extends Controller
     public function show(Product $product)
     {
         $product->load('category');
-        
-        // Get recommended products
-        $recommendations = $product->getRecommendations(6);
-        
-        // Calculate quantity already in cart
-        $qtyInCart = 0;
-        if (Auth::check()) {
-            $cart = Auth::user()->cart;
-            if ($cart) {
-                $cartItem = $cart->cartItems()->where('product_id', $product->id)->first();
-                $qtyInCart = $cartItem ? $cartItem->quantity : 0;
-            }
-        } else {
-            // Guest user - check session cart
-            $sessionCart = Session::get('cart', []);
-            $qtyInCart = isset($sessionCart[$product->id]) ? $sessionCart[$product->id]['quantity'] : 0;
-        }
-        
-        // Calculate available quantity (stock - already in cart)
-        $availableQty = max(0, $product->quantity - $qtyInCart);
-        
-        return view('products.show', compact('product', 'recommendations', 'qtyInCart', 'availableQty'));
+        return view('products.show', compact('product'));
     }
 }

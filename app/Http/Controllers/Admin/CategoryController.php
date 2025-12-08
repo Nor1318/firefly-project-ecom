@@ -12,9 +12,29 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::withCount('products')->latest()->paginate(15);
+        $query = Category::withCount('products');
+
+        // Search functionality
+        if ($request->filled('q')) {
+            $searchTerm = $request->input('q');
+            $query->where('name', 'like', "%{$searchTerm}%")
+                  ->orWhere('slug', 'like', "%{$searchTerm}%");
+        }
+
+        // Sort by product count
+        if ($request->filled('sort_by')) {
+            if ($request->sort_by == 'products_asc') {
+                $query->orderBy('products_count', 'asc');
+            } elseif ($request->sort_by == 'products_desc') {
+                $query->orderBy('products_count', 'desc');
+            }
+        } else {
+            $query->latest();
+        }
+
+        $categories = $query->paginate(15)->appends($request->query());
         return view('admin.categories.index', compact('categories'));
     }
 

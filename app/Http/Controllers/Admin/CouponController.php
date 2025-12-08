@@ -11,9 +11,47 @@ class CouponController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $coupons = Coupon::latest()->paginate(15);
+        $query = Coupon::query();
+
+        // Search functionality
+        if ($request->filled('q')) {
+            $searchTerm = $request->input('q');
+            $query->where('code', 'like', "%{$searchTerm}%");
+        }
+
+        // Filter by type
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            if ($request->status == 'active') {
+                $query->whereDate('expires_at', '>=', now())
+                      ->where('max_uses', '>', 0);
+            } elseif ($request->status == 'expired') {
+                $query->whereDate('expires_at', '<', now());
+            } elseif ($request->status == 'used_up') {
+                $query->where('max_uses', '<=', 0);
+            }
+        }
+
+        // Sort by
+        if ($request->filled('sort_by')) {
+            if ($request->sort_by == 'discount_desc') {
+                $query->orderBy('discount', 'desc');
+            } elseif ($request->sort_by == 'discount_asc') {
+                $query->orderBy('discount', 'asc');
+            } elseif ($request->sort_by == 'expiring_soon') {
+                $query->orderBy('expires_at', 'asc');
+            }
+        } else {
+            $query->latest();
+        }
+
+        $coupons = $query->paginate(15)->appends($request->query());
         return view('admin.coupons.index', compact('coupons'));
     }
 

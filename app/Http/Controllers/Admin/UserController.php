@@ -12,9 +12,38 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::paginate(10);
+        $query = User::query();
+
+        // Search functionality
+        if ($request->filled('q')) {
+            $searchTerm = $request->input('q');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', "%{$searchTerm}%")
+                  ->orWhere('email', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // Filter by role
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+
+        // Sort by
+        if ($request->filled('sort_by')) {
+            if ($request->sort_by == 'name_asc') {
+                $query->orderBy('name', 'asc');
+            } elseif ($request->sort_by == 'name_desc') {
+                $query->orderBy('name', 'desc');
+            } elseif ($request->sort_by == 'newest') {
+                $query->latest();
+            }
+        } else {
+            $query->latest();
+        }
+
+        $users = $query->paginate(15)->appends($request->query());
         return view('admin.users.index', compact('users'));
     }
 

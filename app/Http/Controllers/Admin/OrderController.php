@@ -12,9 +12,41 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with(['user', 'orderItems'])->latest()->paginate(20);
+        $query = Order::with(['user', 'orderItems']);
+
+        // Search functionality
+        if ($request->filled('q')) {
+            $searchTerm = $request->input('q');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('id', 'like', "%{$searchTerm}%")
+                  ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+                      $userQuery->where('name', 'like', "%{$searchTerm}%")
+                                ->orWhere('email', 'like', "%{$searchTerm}%");
+                  });
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Sort by
+        if ($request->filled('sort_by')) {
+            if ($request->sort_by == 'amount_asc') {
+                $query->orderBy('total_amount', 'asc');
+            } elseif ($request->sort_by == 'amount_desc') {
+                $query->orderBy('total_amount', 'desc');
+            } elseif ($request->sort_by == 'oldest') {
+                $query->oldest();
+            }
+        } else {
+            $query->latest();
+        }
+
+        $orders = $query->paginate(15)->appends($request->query());
         return view('admin.orders.index', compact('orders'));
     }
 

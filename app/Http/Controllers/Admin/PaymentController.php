@@ -11,9 +11,46 @@ class PaymentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $payments = Payment::query()->get();
+        $query = Payment::with('order.user');
+
+        // Search functionality
+        if ($request->filled('q')) {
+            $searchTerm = $request->input('q');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('id', 'like', "%{$searchTerm}%")
+                  ->orWhere('payment_method', 'like', "%{$searchTerm}%")
+                  ->orWhereHas('order.user', function ($userQuery) use ($searchTerm) {
+                      $userQuery->where('name', 'like', "%{$searchTerm}%");
+                  });
+            });
+        }
+
+        // Filter by payment method
+        if ($request->filled('method')) {
+            $query->where('payment_method', $request->method);
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Sort by
+        if ($request->filled('sort_by')) {
+            if ($request->sort_by == 'amount_asc') {
+                $query->orderBy('amount', 'asc');
+            } elseif ($request->sort_by == 'amount_desc') {
+                $query->orderBy('amount', 'desc');
+            } elseif ($request->sort_by == 'oldest') {
+                $query->oldest();
+            }
+        } else {
+            $query->latest();
+        }
+
+        $payments = $query->paginate(15)->appends($request->query());
         return view('admin.payments.index', compact('payments'));
     }
 

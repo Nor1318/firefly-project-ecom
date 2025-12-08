@@ -14,10 +14,30 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category')->latest()->paginate(15);
-        return view('admin.products.index', compact('products'));
+        $query = Product::query();
+
+        if ($request->has('q') && $request->q != '') {
+            $query = Product::search($request->q);
+        }
+
+        if ($request->has('category_id') && $request->category_id != '') {
+            $query->where('category_id', $request->category_id);
+        }
+
+        if ($request->has('stock_status') && $request->stock_status != '') {
+            if ($request->stock_status == 'low_stock') {
+                $query->where('quantity', '<', 10)->where('quantity', '>', 0);
+            } elseif ($request->stock_status == 'out_of_stock') {
+                $query->where('quantity', 0);
+            }
+        }
+
+        $products = $query->paginate(15)->appends($request->query());
+        $categories = Category::all();
+        
+        return view('admin.products.index', compact('products', 'categories'));
     }
 
     /**
