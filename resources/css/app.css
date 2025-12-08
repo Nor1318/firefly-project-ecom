@@ -4,6 +4,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@variant dark (&:where(.dark, .dark *));
+
 /* Trix Editor Styles */
 trix-editor {
     min-height: 200px;

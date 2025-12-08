@@ -9,14 +9,14 @@
 {{-- Stats Cards --}}
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
     {{-- Total Revenue --}}
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium text-gray-500">Total Revenue</p>
-                <p class="text-2xl font-bold text-gray-900 mt-2">Rs {{number_format($totalRevenue, 2)}}</p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Revenue</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-2">Rs {{number_format($totalRevenue, 2)}}</p>
             </div>
-            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </div>
@@ -24,11 +24,11 @@
     </div>
 
     {{-- Total Orders --}}
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium text-gray-500">Total Orders</p>
-                <p class="text-2xl font-bold text-gray-900 mt-2">{{$orders}}</p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Orders</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{{$orders}}</p>
             </div>
             <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                 <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,11 +39,11 @@
     </div>
 
     {{-- Total Products --}}
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium text-gray-500">Total Products</p>
-                <p class="text-2xl font-bold text-gray-900 mt-2">{{$products}}</p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Products</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{{$products}}</p>
             </div>
             <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                 <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,11 +54,11 @@
     </div>
 
     {{-- Total Users --}}
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium text-gray-500">Total Users</p>
-                <p class="text-2xl font-bold text-gray-900 mt-2">{{$users}}</p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Users</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{{$users}}</p>
             </div>
             <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
                 <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,18 +72,18 @@
 {{-- Charts Row --}}
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
     {{-- Revenue Chart --}}
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Revenue Trend</h3>
-        <p class="text-sm text-gray-500 mb-4">Last 30 days</p>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Revenue Trend</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Last 30 days</p>
         <div style="height: 300px;">
             <canvas id="revenueChart"></canvas>
         </div>
     </div>
 
     {{-- Orders Chart --}}
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Orders by Status</h3>
-        <p class="text-sm text-gray-500 mb-4">Current distribution</p>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Orders by Status</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Current distribution</p>
         <div style="height: 300px;">
             <canvas id="ordersChart"></canvas>
         </div>
@@ -91,9 +91,9 @@
 </div>
 
 {{-- Top Products --}}
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Products</h3>
-    <p class="text-sm text-gray-500 mb-4">Best performing items</p>
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Products</h3>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Best performing items</p>
     <div style="height: 300px;">
         <canvas id="topProductsChart"></canvas>
     </div>
