@@ -20,4 +20,9 @@ class Payment extends Model
      {
           return $this->belongsTo(Order::class);
      }
+
+     public function getAmountAttribute()
+     {
+          return $this->order ? $this->order->total_amount : 0;
+     }
 }

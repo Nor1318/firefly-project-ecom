@@ -29,4 +29,11 @@ class Order extends Model
      {
           return $this->hasOne(Payment::class);
      }
+
+     public function getTotalAmountAttribute()
+     {
+          return $this->orderItems->sum(function ($item) {
+               return $item->amount_per_item * $item->quantity;
+          });
+     }
 }
